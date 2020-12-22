@@ -41,6 +41,16 @@ Credits:
 - [Pan Docs](https://gbdev.io/pandocs/#the-cartridge-header)
 - [The Cycle-Accurate Game Boy Docs](https://raw.githubusercontent.com/AntonioND/giibiiadvance/master/docs/TCAGBD.pdf)
 
+## Testing
+
+Some tests expect the following game dumps to be available under the `roms/` directory:
+
+| Game name        | Platform | File name |
+|------------------|----------|-----------|
+| Super Mario Land | Game Boy | sml.gb    |
+
+Redistributing these files is illegal, so you need to dump these games by yourself.
+
 ## License
 
 [MIT](LICENSE) &copy; [Hugo Manrique](https://hugmanrique.me)
