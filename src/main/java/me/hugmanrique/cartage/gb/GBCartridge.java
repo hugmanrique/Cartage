@@ -423,7 +423,7 @@ public interface GBCartridge extends Cartridge {
     /**
      * Returns whether the cartridge is supposed to be sold in Japan.
      *
-     * @return {@code true} if this is a cartridge distributed in Japan
+     * @return {@code true} if the cartridge is solely distributed in Japan
      */
     boolean japaneseDistribution();
 
