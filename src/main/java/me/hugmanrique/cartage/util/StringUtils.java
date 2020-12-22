@@ -1,7 +1,6 @@
 package me.hugmanrique.cartage.util;
 
 import java.nio.charset.StandardCharsets;
-import java.util.Locale;
 
 public final class StringUtils {
 

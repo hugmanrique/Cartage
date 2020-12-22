@@ -462,7 +462,7 @@ public interface GBCartridge extends Cartridge {
      *
      * @return the computed header checksum
      */
-    byte computeChecksum(); // TODO make utility?
+    byte computeChecksum();
 
     /**
      * Sets the header checksum.

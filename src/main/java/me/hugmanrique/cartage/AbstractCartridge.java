@@ -54,6 +54,26 @@ public abstract class AbstractCartridge implements Cartridge {
   }
 
   @Override
+  public ByteOrder order() {
+    return this.buffer.order();
+  }
+
+  @Override
+  public int capacity() {
+    return this.buffer.capacity();
+  }
+
+  @Override
+  public int offset() {
+    return this.buffer.position();
+  }
+
+  @Override
+  public void setOffset(final int offset) {
+    this.buffer.position(offset);
+  }
+
+  @Override
   public byte readByte() {
     return this.buffer.get();
   }

@@ -1,5 +1,6 @@
 package me.hugmanrique.cartage;
 
+import java.nio.ByteOrder;
 import java.nio.charset.Charset;
 
 /**
@@ -7,8 +8,13 @@ import java.nio.charset.Charset;
  */
 public interface BufferAccessor {
 
-  // TODO offset(), reset(), etc.
-  // TODO Remove unsigned utilities?
+  ByteOrder order();
+
+  int capacity();
+
+  int offset();
+
+  void setOffset(final int offset);
 
   // Primitives
 
