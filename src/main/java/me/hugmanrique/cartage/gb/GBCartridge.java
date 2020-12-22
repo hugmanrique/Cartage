@@ -337,12 +337,12 @@ public interface GBCartridge extends Cartridge {
     /**
      * The minimum ROM size, in bytes.
      */
-    int MIN_ROM_BYTES = 1 << 15;
+    int MIN_ROM_BYTES = 1 << 15; // 32 KB
 
     /**
      * The maximum ROM size, in bytes.
      */
-    int MAX_ROM_BYTES = 1 << 23;
+    int MAX_ROM_BYTES = 1 << 23; // 8 MB
 
     /**
      * Returns the ROM size.
@@ -386,7 +386,7 @@ public interface GBCartridge extends Cartridge {
     /**
      * The maximum RAM size, in bytes.
      */
-    int MAX_RAM_BYTES = 1 << 17;
+    int MAX_RAM_BYTES = 1 << 17; // 128 KB
 
     /**
      * Returns the RAM size, if any.

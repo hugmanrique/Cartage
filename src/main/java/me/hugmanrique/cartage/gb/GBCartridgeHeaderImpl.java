@@ -201,12 +201,19 @@ final class GBCartridgeHeaderImpl implements GBCartridge.Header {
 
   @Override
   public int romSizeBytes() {
-    return BASE_ROM_SIZE << this.romSize();
+    byte code = this.romSize();
+    return switch (code) {
+      case 0, 1, 2, 3, 4, 5, 6, 7, 8 -> BASE_ROM_SIZE << code;
+      case 0x52 -> 0x120000;
+      case 0x53 -> 0x140000;
+      case 0x54 -> 0x180000;
+      default -> throw new IllegalArgumentException("Invalid ROM size code " + code);
+    };
   }
 
   @Override
   public void setRomSize(final byte code) {
-    if (code < 0 || code > 8) {
+    if ((code < 0 || code > 8) && (code < 0x52 || code > 0x54)) {
       throw new IllegalArgumentException("Invalid ROM size code " + code);
     }
     this.cartridge.setByte(ROM_SIZE_ADDR, code);
