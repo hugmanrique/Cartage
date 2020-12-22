@@ -2,6 +2,7 @@ package me.hugmanrique.cartage.gb;
 
 import static me.hugmanrique.cartage.gb.GBCartridgeHeaderImpl.GLOBAL_CHECKSUM_ADDR;
 
+import java.nio.ByteOrder;
 import me.hugmanrique.cartage.AbstractCartridge;
 
 /**
@@ -12,7 +13,7 @@ final class GBCartridgeImpl extends AbstractCartridge implements GBCartridge {
   private final GBCartridge.Header header;
 
   GBCartridgeImpl(final byte[] data) {
-    super(data);
+    super(data, ByteOrder.LITTLE_ENDIAN);
     this.header = new GBCartridgeHeaderImpl(this);
   }
 
@@ -29,7 +30,7 @@ final class GBCartridgeImpl extends AbstractCartridge implements GBCartridge {
       if (i == GLOBAL_CHECKSUM_ADDR || i == GLOBAL_CHECKSUM_ADDR + 1) {
         continue; // skip checksum bytes
       }
-      checksum += this.getByte(i);
+      checksum += (short) (this.getByte(i) & 0xFF);
     }
     return checksum;
   }

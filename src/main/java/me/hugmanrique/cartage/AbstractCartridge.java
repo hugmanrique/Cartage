@@ -5,6 +5,7 @@ import static java.util.Objects.requireNonNull;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 import java.nio.channels.FileChannel.MapMode;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
@@ -36,8 +37,8 @@ public abstract class AbstractCartridge implements Cartridge {
    *
    * @param data the cartridge data
    */
-  protected AbstractCartridge(final byte[] data) {
-    this(ByteBuffer.wrap(requireNonNull(data)));
+  protected AbstractCartridge(final byte[] data, final ByteOrder order) {
+    this(ByteBuffer.wrap(requireNonNull(data)).order(order));
   }
 
   @Override

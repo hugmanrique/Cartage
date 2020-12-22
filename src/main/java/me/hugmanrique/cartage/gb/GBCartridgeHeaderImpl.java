@@ -11,7 +11,6 @@ final class GBCartridgeHeaderImpl implements GBCartridge.Header {
 
   private static final int ENTRY_POINT_ADDR = 0x100;
   private static final int LOGO_ADDR = 0x104;
-  //private static final int LOGO_LENGTH = 48;
   static final byte[] VALID_LOGO = new byte[] {
     (byte) 0xCE, (byte) 0xED, 0x66, 0x66, (byte) 0xCC, 0x0D, 0x00, 0x0B, 0x03, 0x73, 0x00,
     (byte) 0x83, 0x00, 0x0C, 0x00, 0x0D, 0x00, 0x08, 0x11, 0x1F, (byte) 0x88, (byte) 0x89,
@@ -46,7 +45,7 @@ final class GBCartridgeHeaderImpl implements GBCartridge.Header {
   private static final int CHECKSUM_ADDR = 0x14D; // header checksum
   private static final int CHECKSUM_START_ADDR = 0x134;
   private static final int CHECKSUM_END_ADDR = 0x14C;
-  static final int GLOBAL_CHECKSUM_ADDR = 0x14F; // whole ROM
+  static final int GLOBAL_CHECKSUM_ADDR = 0x14E; // whole ROM
 
   private static void checkHeaderString(final String value, final int expectedLength) {
     requireNonNull(value);
@@ -65,14 +64,43 @@ final class GBCartridgeHeaderImpl implements GBCartridge.Header {
     this.cartridge = requireNonNull(cartridge);
   }
 
-  @Override
-  public int entryPoint() {
-    return this.cartridge.getInt(ENTRY_POINT_ADDR);
+  /**
+   * Returns whether the given Z80 operation code represents a {@code JP} or
+   * {@code CALL} instruction.
+   *
+   * @param opcode the Z80 opcode
+   * @return {@code true} if {@code opcode} represents a {@code JP} or {@code CALL} instruction
+   * @see "Table 15 in the <a href="http://www.zilog.com/docs/z80/um0080.pdf">Z80 User Manual</a>"
+   */
+  private static boolean isJumpOrCallOpcode(final int opcode) {
+    return switch (opcode) {
+      // This is missing the parity and sign conditions. No cartridge uses these.
+      case 0xC3, 0xD8, 0xD2, 0xCA, 0xC2, 0xCD, 0xDC, 0xD4, 0xCC, 0xC4 -> true;
+      default -> false;
+    };
   }
 
   @Override
-  public void setEntryPoint(final int entryPoint) {
-    this.cartridge.setInt(ENTRY_POINT_ADDR, entryPoint);
+  public short entryPoint() {
+    // The entry point is 4 bytes and must contain a JP or CALL instruction (which take 3 bytes).
+    // Thus, the opcode of this instruction is at byte 0 or 1.
+    int offset = ENTRY_POINT_ADDR;
+    do {
+      int opcode = this.cartridge.getUnsignedByte(offset);
+      if (isJumpOrCallOpcode(opcode)) {
+        // Read destination address
+        return this.cartridge.getShort(offset + 1);
+      }
+    } while (offset++ <= ENTRY_POINT_ADDR + 1);
+
+    throw new IllegalStateException("Entry point contains no JP or CALL instruction");
+  }
+
+  @Override
+  public void setEntryPoint(final short entryPoint) {
+    this.cartridge.setByte(ENTRY_POINT_ADDR, (byte) 0x0); // NOP
+    this.cartridge.setByte(ENTRY_POINT_ADDR + 1, (byte) 0xC3); // unconditional JP
+    this.cartridge.setShort(ENTRY_POINT_ADDR + 2, entryPoint); // dest
   }
 
   @Override
@@ -252,6 +280,11 @@ final class GBCartridgeHeaderImpl implements GBCartridge.Header {
   }
 
   @Override
+  public boolean japaneseDistribution() {
+    return !this.destination(); // 0 => Japanese, 1 => Global
+  }
+
+  @Override
   public void setDestination(final boolean destination) {
     byte code = destination ? (byte) 1 : 0;
     this.cartridge.setByte(DEST_CODE_ADDR, code);
@@ -276,7 +309,7 @@ final class GBCartridgeHeaderImpl implements GBCartridge.Header {
   public byte computeChecksum() {
     byte checksum = 0;
     for (int offset = CHECKSUM_START_ADDR; offset <= CHECKSUM_END_ADDR; offset++) {
-      checksum -= this.cartridge.getByte(offset) + 1;
+      checksum -= (byte) (this.cartridge.getByte(offset) + 1);
     }
     return checksum;
   }
@@ -286,13 +319,16 @@ final class GBCartridgeHeaderImpl implements GBCartridge.Header {
     this.cartridge.setByte(CHECKSUM_ADDR, checksum);
   }
 
+  // Global checksum is big endian
+
   @Override
   public short globalChecksum() {
-    return this.cartridge.getShort(GLOBAL_CHECKSUM_ADDR);
+    return Short.reverseBytes(this.cartridge.getShort(GLOBAL_CHECKSUM_ADDR));
   }
 
   @Override
-  public void setGlobalChecksum(final short checksum) {
+  public void setGlobalChecksum(short checksum) {
+    checksum = Short.reverseBytes(checksum);
     this.cartridge.setShort(GLOBAL_CHECKSUM_ADDR, checksum);
   }
 }

@@ -27,6 +27,11 @@ dependencies {
   testImplementation "org.junit.jupiter:junit-jupiter-engine:${junitVersion}"
 }
 
+tasks.withType(JavaCompile).configureEach {
+  // https://github.com/google/error-prone/issues/1647
+  options.errorprone.disable('UnnecessaryParentheses')
+}
+
 jar {
   manifest.attributes(
     'Automatic-Module-Name': 'me.hugmanrique.cartage'

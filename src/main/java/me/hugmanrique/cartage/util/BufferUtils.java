@@ -18,6 +18,7 @@ public final class BufferUtils {
    * @param buffer the buffer
    * @return the array containing the buffer contents
    */
+  @SuppressWarnings("ByteBufferBackingArray")
   public static byte[] toByteArray(final ByteBuffer buffer) {
     requireNonNull(buffer);
     if (buffer.hasArray()) {

@@ -148,16 +148,23 @@ public interface GBCartridge extends Cartridge {
     /**
      * Returns the address to which the console's boot procedure jumps after initialization.
      *
+     * <p>The entry point area is a 4-byte region whose sole purpose is to jump to this address.
+     * It usually contains a {@code NOP} instruction followed by a {@code JP} or {@code CALL}.
+     *
      * @return the entry point address
+     * @throws IllegalStateException if the entry point area contains no {@code JP} or {@code CALL}
+     *         instruction
      */
-    int entryPoint();
+    short entryPoint();
 
     /**
      * Sets the entry point address.
+     * This writes a {@code NOP} instruction followed by an unconditional jump
+     * to the given address.
      *
      * @param entryPoint the entry point address
      */
-    void setEntryPoint(final int entryPoint);
+    void setEntryPoint(final short entryPoint);
 
     /**
      * The number of bytes reserved for the Nintendo logo.
@@ -412,6 +419,13 @@ public interface GBCartridge extends Cartridge {
      * @return the destination code
      */
     boolean destination();
+
+    /**
+     * Returns whether the cartridge is supposed to be sold in Japan.
+     *
+     * @return {@code true} if this is a cartridge distributed in Japan
+     */
+    boolean japaneseDistribution();
 
     /**
      * Sets the destination code.
