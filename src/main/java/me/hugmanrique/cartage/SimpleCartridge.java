@@ -14,12 +14,23 @@ import java.nio.file.Path;
 import me.hugmanrique.cartage.util.BufferUtils;
 
 /**
- * Skeletal {@link Cartridge} implementation backed by a {@link ByteBuffer}.
+ * Base {@link Cartridge} implementation backed by a {@link ByteBuffer}.
  *
  * <p>Even if expensive for small sizes, this implementation supports
  * accessing memory-mapped files in {@link MapMode#READ_WRITE} mode.
  */
-public abstract class AbstractCartridge implements Cartridge {
+public class SimpleCartridge implements Cartridge {
+
+  /**
+   * Constructs a cartridge instance.
+   *
+   * @param data the cartridge data
+   * @param order the byte order
+   * @return the cartridge instance
+   */
+  public static SimpleCartridge from(final byte[] data, final ByteOrder order) {
+    return new SimpleCartridge(data, order);
+  }
 
   private final ByteBuffer buffer;
 
@@ -28,7 +39,7 @@ public abstract class AbstractCartridge implements Cartridge {
    *
    * @param buffer the buffer
    */
-  protected AbstractCartridge(final ByteBuffer buffer) {
+  protected SimpleCartridge(final ByteBuffer buffer) {
     this.buffer = requireNonNull(buffer);
   }
 
@@ -37,7 +48,7 @@ public abstract class AbstractCartridge implements Cartridge {
    *
    * @param data the cartridge data
    */
-  protected AbstractCartridge(final byte[] data, final ByteOrder order) {
+  protected SimpleCartridge(final byte[] data, final ByteOrder order) {
     this(ByteBuffer.wrap(requireNonNull(data)).order(order));
   }
 
@@ -367,7 +378,7 @@ public abstract class AbstractCartridge implements Cartridge {
 
   @Override
   public String toString() {
-    return "AbstractCartridge{"
+    return "SimpleCartridge{"
       + "buffer=" + buffer
       + '}';
   }

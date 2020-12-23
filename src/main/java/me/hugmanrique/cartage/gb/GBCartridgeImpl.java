@@ -3,12 +3,12 @@ package me.hugmanrique.cartage.gb;
 import static me.hugmanrique.cartage.gb.GBCartridgeHeaderImpl.GLOBAL_CHECKSUM_ADDR;
 
 import java.nio.ByteOrder;
-import me.hugmanrique.cartage.AbstractCartridge;
+import me.hugmanrique.cartage.SimpleCartridge;
 
 /**
  * The default {@link GBCartridge} implementation.
  */
-final class GBCartridgeImpl extends AbstractCartridge implements GBCartridge {
+final class GBCartridgeImpl extends SimpleCartridge implements GBCartridge {
 
   private final GBCartridge.Header header;
 

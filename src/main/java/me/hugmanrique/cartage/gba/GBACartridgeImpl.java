@@ -1,12 +1,12 @@
 package me.hugmanrique.cartage.gba;
 
 import java.nio.ByteOrder;
-import me.hugmanrique.cartage.AbstractCartridge;
+import me.hugmanrique.cartage.SimpleCartridge;
 
 /**
  * The default {@link GBACartridge} implementation.
  */
-final class GBACartridgeImpl extends AbstractCartridge implements GBACartridge {
+final class GBACartridgeImpl extends SimpleCartridge implements GBACartridge {
 
   private final GBACartridge.Header header;
 
