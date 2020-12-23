@@ -3,12 +3,12 @@ package me.hugmanrique.cartage.gb;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.Arrays;
 import me.hugmanrique.cartage.CartridgeTestSuite;
 import me.hugmanrique.cartage.TestUtils;
 import org.junit.jupiter.api.Test;
@@ -55,10 +55,9 @@ public class GBCartridgeTests extends CartridgeTestSuite<GBCartridge> {
   }
 
   @Test
-  void testValidLogoReturnsCopy() {
-    byte[] first = GBCartridge.Header.getValidLogo();
-    first[0] = 0; // was 0xCE
-    assertFalse(Arrays.equals(first, GBCartridge.Header.getValidLogo()));
+  void testLogoMethodReturnsCopies() {
+    assertNotSame(header.logo(), header.logo());
+    assertNotSame(GBCartridge.Header.getValidLogo(), GBCartridge.Header.getValidLogo());
   }
 
   @Test
