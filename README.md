@@ -21,6 +21,8 @@ Requires Java 15 or later.
 </dependency>
 ```
 
+### Gradle
+
 ```groovy
 repositories {
   mavenCentral()
@@ -41,13 +43,22 @@ Credits:
 - [Pan Docs](https://gbdev.io/pandocs/#the-cartridge-header)
 - [The Cycle-Accurate Game Boy Docs](https://raw.githubusercontent.com/AntonioND/giibiiadvance/master/docs/TCAGBD.pdf)
 
+## Game Boy Advance
+
+See `GBACartridge`.
+
+Credits:
+- [GBATEK](http://problemkaputt.de/gbatek.htm)
+- [Reiner Ziegler](https://reinerziegler.de.mirrors.gg8.se/GBA/gba.htm)
+
 ## Testing
 
 Some tests expect the following game dumps to be available under the `roms/` directory:
 
-| Game name        | Platform | File name |
-|------------------|----------|-----------|
-| Super Mario Land | Game Boy | sml.gb    |
+| Game name | Platform | File name |
+|-----------|----------|-----------|
+| Super Mario Land | Game Boy | sml.gb |
+| Pokémon FireRed (English) | Game Boy Advance | pfr.gba |
 
 Redistributing these files is illegal, so you need to dump these games by yourself.
 

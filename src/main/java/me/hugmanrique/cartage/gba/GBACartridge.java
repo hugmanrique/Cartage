@@ -23,7 +23,7 @@ public interface GBACartridge {
    * @throws IOException if an I/O error occurs
    */
   static GBACartridge read(final Path path) throws IOException {
-    requireNonNull(path);
+    requireNonNull(path); // TODO
     return null;
   }
 
@@ -35,7 +35,7 @@ public interface GBACartridge {
    * @throws IOException if an I/O error occurs
    */
   static GBACartridge read(final InputStream stream) throws IOException {
-    requireNonNull(stream);
+    requireNonNull(stream); // TODO
     return null;
   }
 
