@@ -38,7 +38,7 @@ public class GBCartridgeTests extends CartridgeTestSuite<GBCartridge> {
 
   @Test
   void testLogo() {
-    final byte[] valid = GBCartridge.Header.getValidLogo();
+    byte[] valid = GBCartridge.Header.getValidLogo();
     byte[] logo = header.logo();
     assertArrayEquals(valid, logo);
 
@@ -46,12 +46,24 @@ public class GBCartridgeTests extends CartridgeTestSuite<GBCartridge> {
     header.logo(logo);
     assertArrayEquals(valid, logo);
 
-    logo = new byte[GBCartridge.Header.LOGO_LENGTH]; // zeros
+    assertThrows(IllegalArgumentException.class, () -> {
+      header.logo(new byte[1]);
+    }, "Invalid length");
+  }
+
+  @Test
+  void testSetLogo() {
+    byte[] logo = new byte[GBCartridge.Header.LOGO_LENGTH]; // zeros
     header.setLogo(logo);
     assertArrayEquals(logo, header.logo());
 
+    byte[] valid = GBCartridge.Header.getValidLogo();
     header.setValidLogo();
     assertArrayEquals(valid, header.logo());
+
+    assertThrows(IllegalArgumentException.class, () -> {
+      header.setLogo(new byte[64]);
+    }, "Invalid length");
   }
 
   @Test
@@ -61,23 +73,18 @@ public class GBCartridgeTests extends CartridgeTestSuite<GBCartridge> {
   }
 
   @Test
-  void testInvalidLogoThrows() {
-    assertThrows(IllegalArgumentException.class, () -> {
-      header.logo(new byte[1]);
-    });
-    assertThrows(IllegalArgumentException.class, () -> {
-      header.setLogo(new byte[64]);
-    });
+  void testTitle() {
+    assertEquals("SUPER MARIOLAND\0", header.title());
   }
 
   @Test
-  void testTitle() {
-    assertEquals("SUPER MARIOLAND\0", header.title());
+  void testSetTitle() {
     final String newTitle = "HELLO WORLD\0\0\0\0\0";
     header.setTitle(newTitle);
     assertEquals(newTitle, header.title());
 
-    assertThrows(IllegalArgumentException.class, () -> header.setTitle("abc"), "16 chars");
+    assertThrows(IllegalArgumentException.class, () ->
+      header.setTitle("abc"), "16 chars");
     assertThrows(IllegalArgumentException.class, () ->
       header.setTitle("áááááááááááááááá"), "ASCII");
     assertThrows(IllegalArgumentException.class, () ->
@@ -178,6 +185,12 @@ public class GBCartridgeTests extends CartridgeTestSuite<GBCartridge> {
   @Test
   void testHeaderChecksum() {
     assertEquals((byte) 0x9E, header.checksum());
+    header.setChecksum((byte) 0x12);
+    assertEquals((byte) 0x12, header.checksum());
+  }
+
+  @Test
+  void testComputeChecksum() {
     assertEquals((byte) 0x9E, header.computeChecksum());
 
     // Simulate a bit flip

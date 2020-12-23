@@ -11,13 +11,13 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  */
 final class GBACartridgeHeaderImpl implements GBACartridge.Header {
 
-  private static final int GLOBAL_ENTRY_POINT_ADDR = GBACartridge.Header.ENTRY_POINT_ADDR;
+  private static final int ENTRY_INSTR_ADDR = GBACartridge.Header.ENTRY_INSTRUCTION_ADDR;
   private static final int ENTRY_POINT_ADDR = 0x0;
   private static final int BRANCH_OPCODE = 0b11101010 << 24; // B{AL}
-  private static final int MAX_BRANCH_OFFSET = (1 << 24) - 1; // words
+  private static final int MAX_BRANCH_OFFSET = (1 << 23) - 1; // words
 
   private static final int LOGO_ADDR = 0x4;
-  private static final int LOGO_LENGTH = 156;
+  private static final int LOGO_LENGTH = GBACartridge.Header.LOGO_LENGTH;
   static final byte[] VALID_LOGO;
 
   static {
@@ -90,21 +90,20 @@ final class GBACartridgeHeaderImpl implements GBACartridge.Header {
     // Shift left to discard opcode and set sign bit, and then shift back,
     // converting from words to bytes (8 - 2 = 6).
     int offset = ((instr << 8) >> 6); // bytes
-    return GLOBAL_ENTRY_POINT_ADDR + offset;
+    return ENTRY_INSTR_ADDR + offset;
   }
 
   @Override
   public void setEntryPoint(final int address) {
-    if (address % 4 != 0) {
-      throw new IllegalArgumentException("Got non-word-aligned address " + address);
+    if ((address & 0x3) != 0) {
+      throw new IllegalArgumentException("Got non-word-aligned address" + address);
     }
-
-    // The sign bit is positioned on the 24-th bit.
-    int offset = (address - GLOBAL_ENTRY_POINT_ADDR) >>> 2; // words
-    if (offset > MAX_BRANCH_OFFSET) {
+    int offset = (address - ENTRY_INSTR_ADDR) >> 2; // words
+    if (Math.abs(offset) > MAX_BRANCH_OFFSET) {
       throw new IllegalArgumentException("Entry point address " + address + " is out of bounds");
     }
-    this.cartridge.setInt(ENTRY_POINT_ADDR, BRANCH_OPCODE | offset); // B{AL} offset
+    int instr = BRANCH_OPCODE | (offset & 0xFFFFFF); // B{AL} offset
+    this.cartridge.setInt(ENTRY_POINT_ADDR, instr);
   }
 
   @Override

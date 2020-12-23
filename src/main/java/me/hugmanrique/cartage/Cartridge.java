@@ -8,6 +8,8 @@ import me.hugmanrique.cartage.gb.GBCartridge;
 /**
  * Represents the contents of a cartridge as a byte buffer.
  *
+ * <p>Changing properties does not update the relevant checksums. This must be done manually.
+ *
  * @see GBCartridge for accessing Game Boy cartridges
  */
 public interface Cartridge extends BufferAccessor {

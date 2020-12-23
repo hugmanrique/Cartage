@@ -214,7 +214,7 @@ public interface GBACartridge extends Cartridge {
      * The address at which a {@code B} instruction branching to the start address of
      * the cartridge is written.
      */
-    int ENTRY_POINT_ADDR = 0x8000000;
+    int ENTRY_INSTRUCTION_ADDR = 0x8000000;
 
     /**
      * Returns the address to which the console's boot procedure jumps after initialization.
@@ -226,11 +226,11 @@ public interface GBACartridge extends Cartridge {
 
     /**
      * Sets the entry point address.
-     * This writes a {@code B} instruction at {@link #ENTRY_POINT_ADDR} with a relative word offset
-     * to the given address.
+     * This writes a {@code B} instruction at {@link #ENTRY_INSTRUCTION_ADDR} with
+     * a relative word offset to the given address.
      *
      * <p>The ARM7TDMI branch instruction contain a signed 24-bit word offset. Therefore,
-     * the minimum and maximum entry point addresses are {@code 0x7000000} and {@code 0x9000000}
+     * the minimum and maximum entry point addresses are {@code 0x6000004} and {@code 0x9FFFFFC}
      * respectively.
      *
      * @param address the entry point address, in bytes
@@ -251,7 +251,7 @@ public interface GBACartridge extends Cartridge {
      * @see #logo() for details on verification
      */
     static byte[] getValidLogo() {
-      return null;
+      return GBACartridgeHeaderImpl.VALID_LOGO.clone();
     }
 
     /**
@@ -310,9 +310,11 @@ public interface GBACartridge extends Cartridge {
 
     /**
      * Returns the 4-character uppercase UTTD code.
-     * The first character indicates the cartridge capabilities,
      *
      * @return the UTTD code
+     * @see #type() to get the cartridge type
+     * @see #shortTitle() to get the short title
+     * @see #destination() to get the destination
      */
     String code();
 
