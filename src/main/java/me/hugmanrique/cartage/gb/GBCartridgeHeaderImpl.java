@@ -119,11 +119,11 @@ final class GBCartridgeHeaderImpl implements GBCartridge.Header {
   }
 
   @Override
-  public void setLogo(final byte[] data) {
-    if (data.length != LOGO_LENGTH) {
-      throw new IllegalArgumentException("Invalid logo array length " + data.length);
+  public void setLogo(final byte[] source) {
+    if (source.length != LOGO_LENGTH) {
+      throw new IllegalArgumentException("Invalid logo array length " + source.length);
     }
-    this.cartridge.setBytes(LOGO_ADDR, data);
+    this.cartridge.setBytes(LOGO_ADDR, source);
   }
 
   @Override
@@ -317,6 +317,13 @@ final class GBCartridgeHeaderImpl implements GBCartridge.Header {
   @Override
   public void setChecksum(final byte checksum) {
     this.cartridge.setByte(CHECKSUM_ADDR, checksum);
+  }
+
+  @Override
+  public byte setChecksum() {
+    byte checksum = this.computeChecksum();
+    this.setChecksum(checksum);
+    return checksum;
   }
 
   // Global checksum is big endian

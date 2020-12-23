@@ -104,7 +104,7 @@ public interface GBCartridge extends Cartridge {
      * Returns the cartridge type identified by the given value.
      *
      * @param value the type identifier
-     * @return the type with the given identifier, or {@code null} if not found
+     * @return the type with the given identifier, or {@code null} if unknown
      */
     public static @Nullable Type of(final byte value) {
       for (var type : values()) {
@@ -124,7 +124,7 @@ public interface GBCartridge extends Cartridge {
     /**
      * Returns the identifier for this cartridge type.
      *
-     * @return the type identifier
+     * @return the identifier
      */
     public byte value() {
       return value;
@@ -142,6 +142,7 @@ public interface GBCartridge extends Cartridge {
 
   /**
    * The header of a Game Boy cartridge.
+   * Changes to the header are reflected in the cartridge, and vice-versa.
    */
   interface Header {
 
@@ -204,11 +205,11 @@ public interface GBCartridge extends Cartridge {
     /**
      * Sets the Nintendo logo bitmap.
      *
-     * @param data the logo
-     * @throws IllegalArgumentException if the length of {@code data} is not {@link #LOGO_LENGTH}
+     * @param source the logo
+     * @throws IllegalArgumentException if the length of {@code source} is not {@link #LOGO_LENGTH}
      * @see #logo() for details on verification
      */
-    void setLogo(final byte[] data);
+    void setLogo(final byte[] source);
 
     /**
      * Sets the valid Nintendo logo.
@@ -323,7 +324,7 @@ public interface GBCartridge extends Cartridge {
     /**
      * Specifies the type of the cartridge.
      *
-     * @return the cartridge type, or {@code null} if not found
+     * @return the cartridge type, or {@code null} if unknown
      */
     @Nullable Type type();
 
@@ -472,16 +473,12 @@ public interface GBCartridge extends Cartridge {
     void setChecksum(final byte checksum);
 
     /**
-     * Updates the header checksum, as returned by {@link #computeChecksum()}.
+     * Sets the header checksum to the value returned by {@link #computeChecksum()}.
      *
      * @return the computed checksum
      * @see #computeChecksum() to compute, but not overwrite, the header checksum
      */
-    default byte setChecksum() {
-      byte checksum = computeChecksum();
-      setChecksum(checksum);
-      return checksum;
-    }
+    byte setChecksum();
 
     /**
      * Returns the checksum of the entire ROM.
