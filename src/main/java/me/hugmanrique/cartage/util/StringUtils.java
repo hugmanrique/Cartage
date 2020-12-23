@@ -1,5 +1,7 @@
 package me.hugmanrique.cartage.util;
 
+import static java.util.Objects.requireNonNull;
+
 import java.nio.charset.StandardCharsets;
 
 public final class StringUtils {
@@ -23,6 +25,16 @@ public final class StringUtils {
 
   public static boolean isAscii(final CharSequence sequence) {
     return StandardCharsets.US_ASCII.newEncoder().canEncode(sequence);
+  }
+
+  public static void requireUppercaseAscii(final String string) {
+    requireNonNull(string);
+    if (!isUpperCase(string)) {
+      throw new IllegalArgumentException("Expected all-uppercase string, got " + string);
+    }
+    if (!isAscii(string)) {
+      throw new IllegalArgumentException(string + " contains non-ASCII characters");
+    }
   }
 
   private StringUtils() {

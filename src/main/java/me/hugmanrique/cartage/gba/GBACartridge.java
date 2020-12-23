@@ -5,6 +5,7 @@ import static java.util.Objects.requireNonNull;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Path;
+import me.hugmanrique.cartage.Cartridge;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
@@ -13,7 +14,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  * @see <a href="http://problemkaputt.de/gbatek.htm">GBATEK</a>
  * @see <a href="https://reinerziegler.de.mirrors.gg8.se/GBA/gba.htm">GBA</a> by R. Ziegler
  */
-public interface GBACartridge {
+public interface GBACartridge extends Cartridge {
 
   /**
    * Reads a cartridge from the given path.
@@ -66,7 +67,7 @@ public interface GBACartridge {
      * @param value the type identifier
      * @return the type with the given identifier, or {@code null} if unknown
      */
-    public static @Nullable Type of(final char value) {
+    public static @Nullable Type of(final byte value) {
       for (var type : values()) {
         if (type.value() == value) {
           return type;
@@ -75,10 +76,10 @@ public interface GBACartridge {
       return null;
     }
 
-    private final char value;
+    private final byte value;
 
     Type(final char value) {
-      this.value = value;
+      this.value = (byte) value;
     }
 
     /**
@@ -86,7 +87,7 @@ public interface GBACartridge {
      *
      * @return the identifier
      */
-    public char value() {
+    public byte value() {
       return value;
     }
   }
@@ -109,7 +110,7 @@ public interface GBACartridge {
      * @param value the destination identifier
      * @return the destination with the given identifier, or {@code null} if unknown
      */
-    public static @Nullable Destination of(final char value) {
+    public static @Nullable Destination of(final byte value) {
       for (var dest : values()) {
         if (dest.value() == value) {
           return dest;
@@ -118,10 +119,10 @@ public interface GBACartridge {
       return null;
     }
 
-    private final char value;
+    private final byte value;
 
     Destination(final char value) {
-      this.value = value;
+      this.value = (byte) value;
     }
 
     /**
@@ -129,7 +130,7 @@ public interface GBACartridge {
      *
      * @return the identifier
      */
-    public char value() {
+    public byte value() {
       return value;
     }
   }

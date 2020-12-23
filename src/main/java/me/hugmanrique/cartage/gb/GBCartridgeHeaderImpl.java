@@ -43,19 +43,14 @@ final class GBCartridgeHeaderImpl implements GBCartridge.Header {
   private static final int DEST_CODE_ADDR = 0x14A;
   private static final int VERSION_ADDR = 0x14C;
   private static final int CHECKSUM_ADDR = 0x14D; // header checksum
-  private static final int CHECKSUM_START_ADDR = 0x134;
-  private static final int CHECKSUM_END_ADDR = 0x14C;
+  private static final int CHECKSUM_START = 0x134;
+  private static final int CHECKSUM_END = 0x14C;
   static final int GLOBAL_CHECKSUM_ADDR = 0x14E; // whole ROM
 
   private static void checkHeaderString(final String value, final int expectedLength) {
     requireNonNull(value);
     StringUtils.requireLength(value, expectedLength);
-    if (!StringUtils.isUpperCase(value)) {
-      throw new IllegalArgumentException("Expected all uppercase string, got " + value);
-    }
-    if (!StringUtils.isAscii(value)) {
-      throw new IllegalArgumentException(value + " contains non-ASCII characters");
-    }
+    StringUtils.requireUppercaseAscii(value);
   }
 
   private final GBCartridge cartridge;
@@ -113,7 +108,7 @@ final class GBCartridgeHeaderImpl implements GBCartridge.Header {
   @Override
   public void logo(final byte[] dest) {
     if (dest.length != LOGO_LENGTH) {
-      throw new IllegalArgumentException("Invalid logo array length " + dest.length);
+      throw new IllegalArgumentException("Invalid dest array length " + dest.length);
     }
     this.cartridge.getBytes(LOGO_ADDR, dest);
   }
@@ -121,7 +116,7 @@ final class GBCartridgeHeaderImpl implements GBCartridge.Header {
   @Override
   public void setLogo(final byte[] source) {
     if (source.length != LOGO_LENGTH) {
-      throw new IllegalArgumentException("Invalid logo array length " + source.length);
+      throw new IllegalArgumentException("Invalid source array length " + source.length);
     }
     this.cartridge.setBytes(LOGO_ADDR, source);
   }
@@ -308,7 +303,7 @@ final class GBCartridgeHeaderImpl implements GBCartridge.Header {
   @Override
   public byte computeChecksum() {
     byte checksum = 0;
-    for (int offset = CHECKSUM_START_ADDR; offset <= CHECKSUM_END_ADDR; offset++) {
+    for (int offset = CHECKSUM_START; offset <= CHECKSUM_END; offset++) {
       checksum -= (byte) (this.cartridge.getByte(offset) + 1);
     }
     return checksum;
