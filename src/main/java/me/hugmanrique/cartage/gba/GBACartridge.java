@@ -4,6 +4,7 @@ import static java.util.Objects.requireNonNull;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import me.hugmanrique.cartage.Cartridge;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -24,8 +25,9 @@ public interface GBACartridge extends Cartridge {
    * @throws IOException if an I/O error occurs
    */
   static GBACartridge read(final Path path) throws IOException {
-    requireNonNull(path); // TODO
-    return null;
+    requireNonNull(path);
+    byte[] data = Files.readAllBytes(path);
+    return new GBACartridgeImpl(data);
   }
 
   /**
@@ -36,8 +38,9 @@ public interface GBACartridge extends Cartridge {
    * @throws IOException if an I/O error occurs
    */
   static GBACartridge read(final InputStream stream) throws IOException {
-    requireNonNull(stream); // TODO
-    return null;
+    requireNonNull(stream);
+    byte[] data = stream.readAllBytes();
+    return new GBACartridgeImpl(data);
   }
 
   /**
