@@ -10,7 +10,7 @@ import me.hugmanrique.cartage.Cartridge;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
- * A Game Boy Advance ROM cartridge.
+ * A Game Boy Advance cartridge.
  *
  * @see <a href="http://problemkaputt.de/gbatek.htm">GBATEK</a>
  * @see <a href="https://reinerziegler.de.mirrors.gg8.se/GBA/gba.htm">GBA</a> by R. Ziegler

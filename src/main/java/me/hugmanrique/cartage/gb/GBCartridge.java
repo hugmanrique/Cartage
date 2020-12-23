@@ -10,7 +10,7 @@ import me.hugmanrique.cartage.Cartridge;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
- * A Game Boy ROM cartridge.
+ * A Game Boy cartridge.
  *
  * @see <a href="https://raw.githubusercontent.com/AntonioND/giibiiadvance/master/docs/TCAGBD.pdf">The Cycle-Accurate Game Boy Docs</a>
  * @see <a href="https://gbdev.io/pandocs/#the-cartridge-header">Pan Docs</a>
