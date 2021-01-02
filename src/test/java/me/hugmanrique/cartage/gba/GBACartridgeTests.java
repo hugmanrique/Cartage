@@ -11,6 +11,9 @@ import me.hugmanrique.cartage.CartridgeTestSuite;
 import me.hugmanrique.cartage.TestUtils;
 import org.junit.jupiter.api.Test;
 
+/**
+ * Tests the default {@link GBACartridge} implementation.
+ */
 public class GBACartridgeTests extends CartridgeTestSuite<GBACartridge> {
 
   private static final Path POKEMON_FIRERED = TestUtils.getCartridge("pfr.gba");
@@ -36,13 +39,13 @@ public class GBACartridgeTests extends CartridgeTestSuite<GBACartridge> {
     assertEquals(0x9FFFFFC, header.entryPoint(), "big positive offset");
 
     assertThrows(IllegalArgumentException.class, () ->
-      header.setEntryPoint(baseAddress + 15), "non-word-aligned");
+        header.setEntryPoint(baseAddress + 15), "non-word-aligned");
     assertThrows(IllegalArgumentException.class, () ->
-      header.setEntryPoint(baseAddress - 21), "negative non-word-aligned");
+        header.setEntryPoint(baseAddress - 21), "negative non-word-aligned");
     assertThrows(IllegalArgumentException.class, () ->
-      header.setEntryPoint(0x6000000), "out of bounds");
+        header.setEntryPoint(0x6000000), "out of bounds");
     assertThrows(IllegalArgumentException.class, () ->
-      header.setEntryPoint(0xA000000), "out of bounds");
+        header.setEntryPoint(0xA000000), "out of bounds");
 
     // Write non-B{AL} instruction
     cartridge.setInt(0x0, 0xE2402001); // sub r2, r0, #1
@@ -97,11 +100,11 @@ public class GBACartridgeTests extends CartridgeTestSuite<GBACartridge> {
     assertEquals(newTitle, header.title());
 
     assertThrows(IllegalArgumentException.class, () ->
-      header.setTitle("abc"), "12 chars");
+        header.setTitle("abc"), "12 chars");
     assertThrows(IllegalArgumentException.class, () ->
-      header.setTitle("áááááááááááá"), "ASCII");
+        header.setTitle("áááááááááááá"), "ASCII");
     assertThrows(IllegalArgumentException.class, () ->
-      header.setTitle("pokemon fire"), "uppercase");
+        header.setTitle("pokemon fire"), "uppercase");
   }
 
   @Test

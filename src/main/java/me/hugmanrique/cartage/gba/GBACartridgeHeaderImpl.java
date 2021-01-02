@@ -21,18 +21,19 @@ final class GBACartridgeHeaderImpl implements GBACartridge.Header {
   static final byte[] VALID_LOGO;
 
   static {
-    int[] validLogo = new int[] {
-      0x24FFAE51, 0x699AA221, 0x3D84820A, 0x84E409AD,
-      0x11248B98, 0xC0817F21, 0xA352BE19, 0x9309CE20,
-      0x10464A4A, 0xF82731EC, 0x58C7E833, 0x82E3CEBF,
-      0x85F4DF94, 0xCE4B09C1, 0x94568AC0, 0x1372A7FC,
-      0x9F844D73, 0xA3CA9A61, 0x5897A327, 0xFC039876,
-      0x231DC761, 0x0304AE56, 0xBF388400, 0x40A70EFD,
-      0xFF52FE03, 0x6F9530F1, 0x97FBC085, 0x60D68025,
-      0xA963BE03, 0x014E38E2, 0xF9A234FF, 0xBB3E0344,
-      0x780090CB, 0x88113A94, 0x65C07C63, 0x87F03CAF,
-      0xD625E48B, 0x380AAC72, 0x21D4F807
-    };
+    int[] validLogo = new int[]
+      {
+        0x24FFAE51, 0x699AA221, 0x3D84820A, 0x84E409AD,
+        0x11248B98, 0xC0817F21, 0xA352BE19, 0x9309CE20,
+        0x10464A4A, 0xF82731EC, 0x58C7E833, 0x82E3CEBF,
+        0x85F4DF94, 0xCE4B09C1, 0x94568AC0, 0x1372A7FC,
+        0x9F844D73, 0xA3CA9A61, 0x5897A327, 0xFC039876,
+        0x231DC761, 0x0304AE56, 0xBF388400, 0x40A70EFD,
+        0xFF52FE03, 0x6F9530F1, 0x97FBC085, 0x60D68025,
+        0xA963BE03, 0x014E38E2, 0xF9A234FF, 0xBB3E0344,
+        0x780090CB, 0x88113A94, 0x65C07C63, 0x87F03CAF,
+        0xD625E48B, 0x380AAC72, 0x21D4F807
+      };
 
     var buffer = ByteBuffer.allocate(LOGO_LENGTH);
     var intBuffer = buffer.asIntBuffer();
@@ -73,7 +74,7 @@ final class GBACartridgeHeaderImpl implements GBACartridge.Header {
    *
    * @param instr the instruction
    * @return {@code true} if the instruction is a {@code B} instruction
-   * @see "Section 4.5 in <a href="https://www.ecs.csun.edu/~smirzaei/docs/ece425/arm7tdmi_instruction_set_reference.pdf">ARM7TDMI Instruction Set Reference</a>"
+   * @see <a href="https://www.ecs.csun.edu/~smirzaei/docs/ece425/arm7tdmi_instruction_set_reference.pdf">Section 4.5 in the ARM7TDMI Instruction Set Reference</a>
    */
   private static boolean isBranchInstruction(final int instr) {
     return ((instr >> 24) & 0xF) == 0b1010;

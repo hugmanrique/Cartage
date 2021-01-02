@@ -11,6 +11,7 @@ import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import me.hugmanrique.cartage.compression.Decompressor;
 import me.hugmanrique.cartage.util.BufferUtils;
 
 /**
@@ -19,26 +20,27 @@ import me.hugmanrique.cartage.util.BufferUtils;
  * <p>Even if expensive for small sizes, this implementation supports
  * accessing memory-mapped files in {@link MapMode#READ_WRITE} mode.
  */
-public class SimpleCartridge implements Cartridge {
+@Deprecated
+public class SimpleCartridge {
 
-  /**
+  /*
    * Constructs a cartridge instance.
    *
    * @param data the cartridge data
    * @param order the byte order
    * @return the cartridge instance
-   */
+   *
   public static SimpleCartridge from(final byte[] data, final ByteOrder order) {
     return new SimpleCartridge(data, order);
   }
 
   private final ByteBuffer buffer;
 
-  /**
+  /*
    * Constructs a cartridge backed by the given buffer.
    *
    * @param buffer the buffer
-   */
+   *
   protected SimpleCartridge(final ByteBuffer buffer) {
     this.buffer = requireNonNull(buffer);
   }
@@ -47,7 +49,7 @@ public class SimpleCartridge implements Cartridge {
    * Constructs a cartridge with the given data.
    *
    * @param data the cartridge data
-   */
+   *
   protected SimpleCartridge(final byte[] data, final ByteOrder order) {
     this(ByteBuffer.wrap(requireNonNull(data)).order(order));
   }
@@ -377,9 +379,21 @@ public class SimpleCartridge implements Cartridge {
   }
 
   @Override
+  public byte[] readCompressed(final Decompressor decompressor) {
+    requireNonNull(decompressor);
+    return decompressor.decompress(this, this.offset());
+  }
+
+  @Override
+  public byte[] getCompressed(final int offset, final Decompressor decompressor) {
+    requireNonNull(decompressor);
+    return decompressor.decompress(this, offset);
+  }
+
+  @Override
   public String toString() {
     return "SimpleCartridge{"
       + "buffer=" + buffer
       + '}';
-  }
+  }*/
 }

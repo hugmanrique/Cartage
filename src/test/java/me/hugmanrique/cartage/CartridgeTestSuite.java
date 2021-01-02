@@ -7,6 +7,11 @@ import java.io.IOException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.TestInstance;
 
+/**
+ * Tests the behavior of a {@link Cartridge} type.
+ *
+ * @param <T> the cartridge type
+ */
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public abstract class CartridgeTestSuite<T extends Cartridge> {
 
