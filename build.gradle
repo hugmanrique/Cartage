@@ -9,23 +9,13 @@ group 'me.hugmanrique'
 version '0.0.1-SNAPSHOT'
 
 ext {
-  moduleName = 'me.hugmanrique.cartage'
   junitVersion = '5.7.0'
+  incubatorArgs = ['--add-modules', 'jdk.incubator.foreign']
 }
 
 java {
   modularity.inferModulePath = true
   toolchain.languageVersion = JavaLanguageVersion.of(16)
-}
-
-compileJava {
-  inputs.property('moduleName', moduleName)
-  doFirst {
-    options.compilerArgs = [
-      '--module-path', classpath.asPath
-    ]
-    classpath = files()
-  }
 }
 
 repositories {
@@ -39,10 +29,11 @@ dependencies {
   testImplementation "org.junit.jupiter:junit-jupiter-engine:${junitVersion}"
 }
 
-/*tasks.withType(JavaCompile).configureEach {
-  // https://github.com/google/error-prone/issues/1647
-  options.errorprone.disable('UnnecessaryParentheses')
-}*/
+tasks.withType(JavaCompile).configureEach {
+  options.compilerArgs += incubatorArgs
+  //// https://github.com/google/error-prone/issues/1647
+  //options.errorprone.disable('UnnecessaryParentheses')
+}
 
 checkstyle {
   toolVersion = '8.38'
@@ -53,4 +44,5 @@ checkstyle {
 
 test {
   useJUnitPlatform()
+  jvmArgs += incubatorArgs
 }

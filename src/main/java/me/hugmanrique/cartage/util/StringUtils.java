@@ -22,7 +22,7 @@ public final class StringUtils {
   }
 
   /**
-   * Ensures the given string is composed of uppercase ASCII characters.
+   * Ensures the given string is composed of uppercase ASCII characters and spaces.
    *
    * @param string the string to check
    * @throws IllegalArgumentException if the string contains non-ASCII or non-uppercase characters
@@ -31,7 +31,7 @@ public final class StringUtils {
     requireNonNull(string);
     for (int i = 0; i < string.length(); i++) {
       char c = string.charAt(i); // ignore code points outside of the BMP
-      if (c < 'A' || c > 'Z') {
+      if (c != ' ' && (c < 'A' || c > 'Z')) {
         throw new IllegalArgumentException("Expected all-uppercase ASCII string, got " + string);
       }
     }

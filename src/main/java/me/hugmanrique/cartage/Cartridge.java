@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.ByteOrder;
 import java.nio.file.Path;
+import jdk.incubator.foreign.MemorySegment;
 import me.hugmanrique.cartage.gb.GBCartridge;
 import me.hugmanrique.cartage.gba.GBACartridge;
 
@@ -94,17 +95,39 @@ public interface Cartridge extends CartridgeAccessors, AutoCloseable {
   void close();
 
   /**
-   * Writes the cartridge contents to the given path.
+   * Copies the contents from the given segment to this cartridge. More specifically, the bytes at
+   * offset {@code 0} through {@code cartridge.size() - 1} in the source segment are copied into
+   * this cartridge at offset {@code 0} through {@code cartridge.size() - 1}.
    *
-   * @param path the path
+   * @param source the source segment
+   * @throws IndexOutOfBoundsException if {@code source.byteSize() > this.size()}
+   * @throws IllegalStateException if either the source segment or the cartridge are closed
+   */
+  void copyFrom(final MemorySegment source);
+
+  /**
+   * Copies the cartridge contents to the given segment. More specifically, the bytes at offset
+   * {@code 0} through {@code dest.byteSize() - 1} in the cartridge are copied into
+   * the given segment at offset {@code 0} through {@code dest.byteSize() - 1}.
+   *
+   * @param dest the destination segment
+   * @throws IndexOutOfBoundsException if {@code this.size() > dest.byteSize()}
+   * @throws IllegalStateException if either the destination segment or the cartridge are closed
+   */
+  void copyInto(final MemorySegment dest);
+
+  /**
+   * Copies the cartridge contents to the given path.
+   *
+   * @param path the destination path
    * @throws IOException if an I/O error occurs
    * @throws IllegalStateException if the cartridge is closed
    */
-  void writeTo(final Path path) throws IOException;
+  void copyInto(final Path path) throws IOException;
 
   // TODO Remove array copy in AbstractCartridge to lift maximum size restriction
   /**
-   * Writes the cartridge contents to the given stream. The stream is not closed.
+   * Copies the cartridge contents to the given stream. The stream is not closed.
    *
    * @param stream the output stream
    * @throws UnsupportedOperationException if this cartridge's contents cannot be copied into
@@ -112,5 +135,5 @@ public interface Cartridge extends CartridgeAccessors, AutoCloseable {
    * @throws IOException if an I/O error occurs
    * @throws IllegalStateException if the cartridge is closed
    */
-  void writeTo(final OutputStream stream) throws IOException;
+  void copyInto(final OutputStream stream) throws IOException;
 }

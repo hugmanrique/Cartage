@@ -307,7 +307,7 @@ public abstract class AbstractCartridge implements Cartridge {
     requireNonNull(sequence);
     requireNonNull(charset);
     byte[] encoded = sequence.toString().getBytes(charset);
-    this.setBytes(this.offset, encoded);
+    this.setBytes(offset, encoded);
     return encoded.length;
   }
 
@@ -332,7 +332,18 @@ public abstract class AbstractCartridge implements Cartridge {
   }
 
   @Override
-  public void writeTo(final Path path) throws IOException {
+  public void copyFrom(final MemorySegment source) {
+    this.segment.copyFrom(requireNonNull(source));
+  }
+
+  @Override
+  public void copyInto(final MemorySegment dest) {
+    requireNonNull(dest);
+    dest.copyFrom(this.segment);
+  }
+
+  @Override
+  public void copyInto(final Path path) throws IOException {
     requireNonNull(path);
     try (var dest =
            MemorySegment.mapFile(path, 0, this.size(), FileChannel.MapMode.READ_WRITE)) {
@@ -341,7 +352,7 @@ public abstract class AbstractCartridge implements Cartridge {
   }
 
   @Override
-  public void writeTo(final OutputStream stream) throws IOException {
+  public void copyInto(final OutputStream stream) throws IOException {
     requireNonNull(stream);
     byte[] data = this.segment.toByteArray();
     stream.write(data);
