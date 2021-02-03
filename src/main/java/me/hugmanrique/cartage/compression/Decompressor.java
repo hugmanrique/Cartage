@@ -18,7 +18,7 @@ public interface Decompressor {
    * @return the decompressed data
    * @throws DecompressionException if an error occurs while attempting decompression
    */
-  byte[] decompress(final Cartridge cartridge, final int offset) throws DecompressionException;
+  byte[] decompress(final Cartridge cartridge, final long offset) throws DecompressionException;
 
   default byte[] decompress(final Cartridge cartridge) throws DecompressionException {
     return this.decompress(cartridge, cartridge.offset());

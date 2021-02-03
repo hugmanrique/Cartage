@@ -2,65 +2,38 @@ package me.hugmanrique.cartage.util;
 
 import static java.util.Objects.requireNonNull;
 
-import java.nio.charset.StandardCharsets;
-
 /**
  * {@link String} related utilities.
  */
 public final class StringUtils {
 
   /**
-   * TODO document.
+   * Ensures the length of the given sequence is {@code length}.
    *
-   * @param sequence doc
-   * @param expectedLength doc
+   * @param sequence the sequence to check
+   * @param length the expected length
+   * @throws IllegalArgumentException if the length of the sequence is not {@code length}
    */
-  public static void requireLength(final CharSequence sequence, final int expectedLength) {
-    if (sequence.length() != expectedLength) {
-      throw new IllegalArgumentException("Expected string length to be " + expectedLength
+  public static void requireLength(final CharSequence sequence, final int length) {
+    if (sequence.length() != length) {
+      throw new IllegalArgumentException("Expected string length to be " + length
         + ", got" + sequence.length() + " instead (" + sequence + ")");
     }
   }
 
-  // TODO Document this accepts uppercase AND numbers and symbols (e.g. HELLO123 returns true)
-
   /**
-   * TODO document.
+   * Ensures the given string is composed of uppercase ASCII characters.
    *
-   * @param string document
-   * @return document
-   */
-  public static boolean isUpperCase(final String string) {
-    for (int i = 0; i < string.length(); i++) {
-      if (Character.isLowerCase(string.charAt(i))) {
-        return false;
-      }
-    }
-    return true;
-  }
-
-  /**
-   * TODO Document.
-   *
-   * @param sequence document
-   * @return document
-   */
-  public static boolean isAscii(final CharSequence sequence) {
-    return StandardCharsets.US_ASCII.newEncoder().canEncode(sequence);
-  }
-
-  /**
-   * TODO Document.
-   *
-   * @param string document
+   * @param string the string to check
+   * @throws IllegalArgumentException if the string contains non-ASCII or non-uppercase characters
    */
   public static void requireUppercaseAscii(final String string) {
     requireNonNull(string);
-    if (!isUpperCase(string)) {
-      throw new IllegalArgumentException("Expected all-uppercase string, got " + string);
-    }
-    if (!isAscii(string)) {
-      throw new IllegalArgumentException(string + " contains non-ASCII characters");
+    for (int i = 0; i < string.length(); i++) {
+      char c = string.charAt(i); // ignore code points outside of the BMP
+      if (c < 'A' || c > 'Z') {
+        throw new IllegalArgumentException("Expected all-uppercase ASCII string, got " + string);
+      }
     }
   }
 

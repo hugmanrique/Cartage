@@ -422,6 +422,7 @@ interface CartridgeAccessors {
    * @throws IndexOutOfBoundsException if {@link Cartridge#remaining()}} is less than the number
    *         of bytes to be written
    */
+  @SuppressWarnings("UnusedReturnValue")
   int writeString(final CharSequence sequence, final Charset charset);
 
   /**
@@ -435,6 +436,7 @@ interface CartridgeAccessors {
    * @throws IndexOutOfBoundsException if the given offset is out of bounds, i.e. less than 0 or
    *         greater than {@link Cartridge#size()} minus the number of bytes to be written
    */
+  @SuppressWarnings("UnusedReturnValue")
   int setString(final long offset, final CharSequence sequence, final Charset charset);
 
   /**
@@ -447,6 +449,7 @@ interface CartridgeAccessors {
    * @throws IndexOutOfBoundsException if {@link Cartridge#remaining()} is less than the number
    *         of bytes to be written
    */
+  @SuppressWarnings("UnusedReturnValue")
   int writeAscii(final CharSequence sequence);
 
   /**
@@ -459,6 +462,7 @@ interface CartridgeAccessors {
    * @throws IndexOutOfBoundsException if the given offset is out of bounds, i.e. less than 0 or
    *         greater than {@link Cartridge#size()} minus the number of bytes to be written
    */
+  @SuppressWarnings("UnusedReturnValue")
   int setAscii(final long offset, final CharSequence sequence);
 
   /**
@@ -471,6 +475,7 @@ interface CartridgeAccessors {
    * @throws IndexOutOfBoundsException if {@link Cartridge#remaining()} is less than the number
    *         of bytes to be written
    */
+  @SuppressWarnings("UnusedReturnValue")
   int writeUtf8(final CharSequence sequence);
 
   /**
@@ -483,6 +488,7 @@ interface CartridgeAccessors {
    * @throws IndexOutOfBoundsException if the given offset is out of bounds, i.e. less than 0 or
    *         greater than {@link Cartridge#size()} minus the number of bytes to be written
    */
+  @SuppressWarnings("UnusedReturnValue")
   int setUtf8(final long offset, final CharSequence sequence);
 
   // TODO readCompressed methods
