@@ -22,6 +22,21 @@ public final class StringUtils {
   }
 
   /**
+   * Ensures the length of the given sequence is less than or equal to {@code maxLength}.
+   *
+   * @param sequence the sequence to check
+   * @param maxLength the maximum length allowed
+   * @throws IllegalArgumentException if the length of the sequence is greater than
+   *         {@code maxLength}
+   */
+  public static void requireMaxLength(final CharSequence sequence, final int maxLength) {
+    if (sequence.length() > maxLength) {
+      throw new IllegalArgumentException("Expected string length to be less than " + maxLength
+        + ", got " + sequence.length() + " instead (" + sequence + ")");
+    }
+  }
+
+  /**
    * Ensures the given string is composed of uppercase ASCII characters, spaces, and
    * null terminators ({@code \0}).
    *

@@ -229,8 +229,8 @@ public interface GBCartridge extends Cartridge {
      * Sets the game title.
      *
      * @param title the game title
-     * @throws IllegalArgumentException if the value has a length different from 16, or
-     *         contains non-ASCII or non-uppercase characters
+     * @throws IllegalArgumentException if the value has a length greater than 16, or contains
+     *         non-ASCII or non-uppercase characters
      */
     void setTitle(final String title);
 
@@ -245,8 +245,8 @@ public interface GBCartridge extends Cartridge {
      * Sets the game manufacturer.
      *
      * @param manufacturer the game manufacturer
-     * @throws IllegalArgumentException if the value has a length different from 4, or
-     *         contains non-ASCII or non-uppercase characters
+     * @throws IllegalArgumentException if the value has a length greater than 4, or contains
+     *         non-ASCII or non-uppercase characters
      */
     void setManufacturer(final String manufacturer);
 

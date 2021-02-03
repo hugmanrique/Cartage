@@ -48,10 +48,11 @@ final class GBCartridgeHeaderImpl implements GBCartridge.Header {
   private static final int CHECKSUM_END = 0x14C;
   static final int GLOBAL_CHECKSUM_ADDR = 0x14E; // whole ROM
 
-  private static void checkHeaderString(final String value, final int expectedLength) {
+  private static String prepareString(final String value, final int expectedLength) {
     requireNonNull(value);
-    StringUtils.requireLength(value, expectedLength);
+    StringUtils.requireMaxLength(value, expectedLength);
     StringUtils.requireUppercaseAscii(value);
+    return StringUtils.padEnd(value, expectedLength, '\0');
   }
 
   private final GBCartridge cartridge;
@@ -134,8 +135,7 @@ final class GBCartridgeHeaderImpl implements GBCartridge.Header {
 
   @Override
   public void setTitle(final String title) {
-    checkHeaderString(title, TITLE_LENGTH);
-    this.cartridge.setAscii(TITLE_ADDR, title);
+    this.cartridge.setAscii(TITLE_ADDR, prepareString(title, TITLE_LENGTH));
   }
 
   @Override
@@ -145,8 +145,7 @@ final class GBCartridgeHeaderImpl implements GBCartridge.Header {
 
   @Override
   public void setManufacturer(final String manufacturer) {
-    checkHeaderString(manufacturer, MANUFACTURER_LENGTH);
-    this.cartridge.setAscii(MANUFACTURER_ADDR, manufacturer);
+    this.cartridge.setAscii(MANUFACTURER_ADDR, prepareString(manufacturer, MANUFACTURER_LENGTH));
   }
 
   @Override

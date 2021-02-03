@@ -87,11 +87,17 @@ public class GBCartridgeTests extends CartridgeTestSuite<GBCartridge> {
     assertEquals(newTitle, header.title());
 
     assertThrows(IllegalArgumentException.class, () ->
-        header.setTitle("abc"), "16 chars");
+        header.setTitle("ABCDEFGHIJKLMNOPQ"), "16 chars");
     assertThrows(IllegalArgumentException.class, () ->
         header.setTitle("áááááááááááááááá"), "ASCII");
     assertThrows(IllegalArgumentException.class, () ->
         header.setTitle("super marioland\0"), "uppercase");
+  }
+
+  @Test
+  void testSetTitlePadsStrings() {
+    header.setTitle("FOO BAR BAZ"); // length 11 <= 16
+    assertEquals("FOO BAR BAZ\0\0\0\0\0", header.title());
   }
 
   @Test
@@ -102,11 +108,17 @@ public class GBCartridgeTests extends CartridgeTestSuite<GBCartridge> {
     header.setManufacturer(newManufacturer);
     assertEquals(newManufacturer, header.manufacturer());
     assertThrows(IllegalArgumentException.class, () ->
-        header.setManufacturer("abc"), "4 chars");
+        header.setManufacturer("ABCDE"), "4 chars");
     assertThrows(IllegalArgumentException.class, () ->
         header.setManufacturer("éíóú"), "ASCII");
     assertThrows(IllegalArgumentException.class, () ->
         header.setManufacturer("abcd\0"), "uppercase");
+  }
+
+  @Test
+  void testSetManufacturerPadsStrings() {
+    header.setManufacturer("AB"); // length 2 <= 4
+    assertEquals("AB\0\0", header.manufacturer());
   }
 
   @Test
