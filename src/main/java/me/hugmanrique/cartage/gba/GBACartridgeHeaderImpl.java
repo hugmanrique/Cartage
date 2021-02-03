@@ -13,7 +13,7 @@ final class GBACartridgeHeaderImpl implements GBACartridge.Header {
 
   private static final int ENTRY_INSTR_ADDR = GBACartridge.Header.ENTRY_INSTRUCTION_ADDR;
   private static final int ENTRY_POINT_ADDR = 0x0;
-  private static final int BRANCH_OPCODE = 0b11101010 << 24; // B{AL}
+  private static final int BRANCH_OPCODE = 0b11101010; // B{AL}
   private static final int MAX_BRANCH_OFFSET = (1 << 23) - 1; // words
 
   private static final int LOGO_ADDR = 0x4;
@@ -103,7 +103,7 @@ final class GBACartridgeHeaderImpl implements GBACartridge.Header {
     if (Math.abs(offset) > MAX_BRANCH_OFFSET) {
       throw new IllegalArgumentException("Entry point address " + address + " is out of bounds");
     }
-    int instr = BRANCH_OPCODE | (offset & 0xFFFFFF); // B{AL} offset
+    int instr = (BRANCH_OPCODE << 24) | (offset & 0xFFFFFF); // B{AL} offset
     this.cartridge.setInt(ENTRY_POINT_ADDR, instr);
   }
 
