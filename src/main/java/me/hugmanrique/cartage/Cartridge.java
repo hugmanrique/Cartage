@@ -5,14 +5,18 @@ import me.hugmanrique.cartage.gb.GBCartridge;
 import me.hugmanrique.cartage.gba.GBACartridge;
 
 // TODO Tweak javadoc
-// TODO Document closing explicitly is required
 // TODO Add @throws when closed to all accessor methods
+// TODO Document thread confinement, likely to change on future Panama versions
 /**
  * Represents the contents of a cartridge as a byte buffer.
  *
  * <p>The cartridge has a certain size, and an offset position for accessing data.
  * The size is non-negative and immutable. The offset is the zero-based index of
  * the next element to be read or written.
+ *
+ * <p>Cartridges are closed explicitly (see {@link #close()}). When a cartridge is closed,
+ * the underlying resources associated with said cartridge might be deallocated, and subsequent
+ * operation on the cartridge will fail with {@link IllegalStateException}.
  *
  * @see GBCartridge for accessing Game Boy cartridges
  * @see GBACartridge for accessing Game Boy Advance cartridges
@@ -23,6 +27,7 @@ public interface Cartridge extends CartridgeAccessors, AutoCloseable {
    * Returns the cartridge's byte order.
    *
    * @return the current byte order
+   * @throws IllegalStateException if the cartridge is closed
    */
   ByteOrder order();
 
@@ -30,6 +35,7 @@ public interface Cartridge extends CartridgeAccessors, AutoCloseable {
    * Sets the cartridge's byte order.
    *
    * @param order the new byte order
+   * @throws IllegalStateException if the cartridge is closed
    */
   void order(final ByteOrder order);
 
@@ -37,6 +43,7 @@ public interface Cartridge extends CartridgeAccessors, AutoCloseable {
    * Returns the cartridge's offset.
    *
    * @return the current offset, in bytes
+   * @throws IllegalStateException if the cartridge is closed
    */
   long offset();
 
@@ -46,6 +53,7 @@ public interface Cartridge extends CartridgeAccessors, AutoCloseable {
    * @param offset the new offset, in bytes
    * @throws IndexOutOfBoundsException if the given offset is out of bounds, i.e. less than 0 or
    *         greater than or equal to {@link #size()}
+   * @throws IllegalStateException if the cartridge is closed
    */
   void setOffset(final long offset);
 
@@ -53,6 +61,7 @@ public interface Cartridge extends CartridgeAccessors, AutoCloseable {
    * Returns the size of the cartridge.
    *
    * @return the cartridge size, in bytes
+   * @throws IllegalStateException if the cartridge is closed
    */
   long size(); // TODO document immutable
 
@@ -60,6 +69,7 @@ public interface Cartridge extends CartridgeAccessors, AutoCloseable {
    * Returns the number of bytes between the current offset and the end of the cartridge.
    *
    * @return the number of remaining bytes
+   * @throws IllegalStateException if the cartridge is closed
    */
   long remaining();
 
@@ -68,12 +78,15 @@ public interface Cartridge extends CartridgeAccessors, AutoCloseable {
    * the end of the cartridge.
    *
    * @return {@code true} if and only if {@link #remaining()} equals 0
+   * @throws IllegalStateException if the cartridge is closed
    */
   boolean hasRemaining();
 
   /**
-   * Closes the cartridge. Once a cartridge has been closed, any attempt to access its contents
-   * will fail with {@link IllegalStateException}.
+   * Closes the cartridge. Once closed, any subsequent operation on the cartridge will fail with
+   * {@link IllegalStateException}.
+   *
+   * @throws IllegalStateException if the cartridge is closed
    */
   @Override
   void close();
