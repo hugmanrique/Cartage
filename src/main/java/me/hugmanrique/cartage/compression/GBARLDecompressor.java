@@ -3,7 +3,7 @@ package me.hugmanrique.cartage.compression;
 import me.hugmanrique.cartage.Cartridge;
 
 /**
- * Implements the RLUnComp algorithm, used by the BIOS of the GBA and Nintendo DS.
+ * Implements the RLUnCompRead algorithm, present in the BIOS of the GBA and Nintendo DS.
  *
  * @see <a href="https://problemkaputt.de/gbatek.htm#biosdecompressionfunctions">GBATEK</a>
  */
@@ -28,9 +28,7 @@ public final class GBARLDecompressor implements Decompressor {
   private GBARLDecompressor() {}
 
   @Override
-  public byte[] decompress(final Cartridge cartridge, final long offset)
-        throws DecompressionException {
-    cartridge.setOffset(offset);
+  public byte[] decompress(final Cartridge cartridge) throws DecompressionException {
     try {
       final int header = cartridge.readInt();
       if ((header >>> 24) != MAGIC_NUMBER) {
@@ -53,7 +51,7 @@ public final class GBARLDecompressor implements Decompressor {
         if (replicate) {
           byte value = cartridge.readByte();
           // TODO Replace by array copy, segments don't provide this yet.
-          for (int i = 0; i < runLength + 3; i++) { // 3 repetition baseline
+          for (int i = 0; i < runLength + 2; i++) { // 2 repetition baseline
             result[index++] = value;
           }
         } else {
@@ -63,10 +61,8 @@ public final class GBARLDecompressor implements Decompressor {
         }
       }
       return result;
-    } catch (IndexOutOfBoundsException e) {
+    } catch (final IndexOutOfBoundsException e) {
       throw new DecompressionException("Got corrupted RLE-encoded data", e);
-    } finally {
-      cartridge.setOffset(offset);
     }
   }
 }
