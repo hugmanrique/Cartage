@@ -131,7 +131,7 @@ public interface Cartridge extends CartridgeAccessors, AutoCloseable {
    *
    * @param stream the output stream
    * @throws UnsupportedOperationException if this cartridge's contents cannot be copied into
-   *         a {@link byte[]} instance, e.g. its size is greater than {@link Integer#MAX_VALUE}
+   *         a {@code byte[]} instance, e.g. its size is greater than {@link Integer#MAX_VALUE}
    * @throws IOException if an I/O error occurs
    * @throws IllegalStateException if the cartridge is closed
    */
