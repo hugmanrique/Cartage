@@ -301,8 +301,8 @@ public interface GBACartridge extends Cartridge {
      * Sets the game title.
      *
      * @param title the game title
-     * @throws IllegalArgumentException if the value has a length different from 12, or
-     *         contains non-ASCII or non-uppercase characters
+     * @throws IllegalArgumentException if the value has a length greater than 12, or contains
+     *         non-ASCII or non-uppercase characters
      */
     void setTitle(final String title);
 

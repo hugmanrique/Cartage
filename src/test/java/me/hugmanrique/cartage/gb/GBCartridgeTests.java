@@ -95,7 +95,7 @@ public class GBCartridgeTests extends CartridgeTestSuite<GBCartridge> {
   }
 
   @Test
-  void testSetTitlePadsStrings() {
+  void testSetTitlePadsValue() {
     header.setTitle("FOO BAR BAZ"); // length 11 <= 16
     assertEquals("FOO BAR BAZ\0\0\0\0\0", header.title());
   }
@@ -116,7 +116,7 @@ public class GBCartridgeTests extends CartridgeTestSuite<GBCartridge> {
   }
 
   @Test
-  void testSetManufacturerPadsStrings() {
+  void testSetManufacturerPadsValue() {
     header.setManufacturer("AB"); // length 2 <= 4
     assertEquals("AB\0\0", header.manufacturer());
   }

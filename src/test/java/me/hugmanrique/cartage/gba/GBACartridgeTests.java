@@ -100,11 +100,17 @@ public class GBACartridgeTests extends CartridgeTestSuite<GBACartridge> {
     assertEquals(newTitle, header.title());
 
     assertThrows(IllegalArgumentException.class, () ->
-        header.setTitle("abc"), "12 chars");
+        header.setTitle("THIS IS SOME LONG TEXT"), "12 chars");
     assertThrows(IllegalArgumentException.class, () ->
         header.setTitle("áááááááááááá"), "ASCII");
     assertThrows(IllegalArgumentException.class, () ->
         header.setTitle("pokemon fire"), "uppercase");
+  }
+
+  @Test
+  void testSetTitlePadsValue() {
+    header.setTitle("HELLO WORLD");
+    assertEquals("HELLO WORLD\0", header.title());
   }
 
   @Test
@@ -134,6 +140,18 @@ public class GBACartridgeTests extends CartridgeTestSuite<GBACartridge> {
     header.setDestination(GBACartridge.Destination.EUROPE);
     assertEquals(GBACartridge.Destination.EUROPE, header.destination());
     assertEquals("FXYP", header.code());
+  }
+
+  @Test
+  void testSetShortTitleThrowsIfInvalidLength() {
+    assertThrows(IllegalArgumentException.class, () -> header.setCode("A"), "too short");
+    assertThrows(IllegalArgumentException.class, () -> header.setCode("ABC"), "too long");
+  }
+
+  @Test
+  void testSetCodeThrowsIfInvalidLength() {
+    assertThrows(IllegalArgumentException.class, () -> header.setCode("ABC"), "too short");
+    assertThrows(IllegalArgumentException.class, () -> header.setCode("ABCDE"), "too long");
   }
 
   @Test

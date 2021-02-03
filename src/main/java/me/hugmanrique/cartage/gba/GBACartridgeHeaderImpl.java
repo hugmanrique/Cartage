@@ -56,10 +56,17 @@ final class GBACartridgeHeaderImpl implements GBACartridge.Header {
   private static final int CHECKSUM_START = 0xA0;
   private static final int CHECKSUM_END = 0xBC;
 
-  private static void checkHeaderString(final String value, final int expectedLength) {
+  private static String prepareString(final String value, final int expectedLength,
+                                      final boolean pad) {
     requireNonNull(value);
-    StringUtils.requireLength(value, expectedLength);
     StringUtils.requireUppercaseAscii(value);
+    if (pad) {
+      StringUtils.requireMaxLength(value, expectedLength);
+      return StringUtils.padEnd(value, expectedLength, '\0');
+    } else {
+      StringUtils.requireLength(value, expectedLength);
+      return value;
+    }
   }
 
   private final GBACartridge cartridge;
@@ -142,8 +149,7 @@ final class GBACartridgeHeaderImpl implements GBACartridge.Header {
 
   @Override
   public void setTitle(final String title) {
-    checkHeaderString(title, TITLE_LENGTH);
-    this.cartridge.setAscii(TITLE_ADDR, title);
+    this.cartridge.setAscii(TITLE_ADDR, prepareString(title, TITLE_LENGTH, true));
   }
 
   @Override
@@ -153,8 +159,7 @@ final class GBACartridgeHeaderImpl implements GBACartridge.Header {
 
   @Override
   public void setCode(final String code) {
-    checkHeaderString(code, CODE_LENGTH);
-    this.cartridge.setAscii(CODE_ADDR, code);
+    this.cartridge.setAscii(CODE_ADDR, prepareString(code, CODE_LENGTH, false));
   }
 
   @Override
@@ -176,8 +181,7 @@ final class GBACartridgeHeaderImpl implements GBACartridge.Header {
 
   @Override
   public void setShortTitle(final String value) {
-    checkHeaderString(value, SHORT_TITLE_LENGTH);
-    this.cartridge.setAscii(SHORT_TITLE_ADDR, value);
+    this.cartridge.setAscii(SHORT_TITLE_ADDR, prepareString(value, SHORT_TITLE_LENGTH, false));
   }
 
   @Override
