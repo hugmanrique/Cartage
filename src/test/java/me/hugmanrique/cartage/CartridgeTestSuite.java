@@ -22,7 +22,7 @@ public abstract class CartridgeTestSuite<T extends Cartridge> {
   protected CartridgeTestSuite(final T cartridge) {
     this.cartridge = requireNonNull(cartridge);
     this.original = MemorySegment.ofByteBuffer(ByteBuffer.allocate((int) cartridge.size()));
-    this.cartridge.copyInto(this.original);
+    this.cartridge.copyTo(this.original);
   }
 
   protected void reset() {

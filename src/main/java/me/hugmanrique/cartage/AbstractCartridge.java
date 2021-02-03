@@ -260,6 +260,13 @@ public abstract class AbstractCartridge implements Cartridge {
     }
   }
 
+  /*@Override
+  public void interCopy(final long sourceOffset, final long destOffset, final int length) {
+    var source = this.segment.asSlice(destOffset, length);
+    var dest = this.segment.asSlice(destOffset, length);
+    source.copyFrom(dest);
+  }*/
+
   @Override
   public String readString(final int length, final Charset charset) {
     String value = this.getString(this.offset, length, charset);
@@ -337,13 +344,13 @@ public abstract class AbstractCartridge implements Cartridge {
   }
 
   @Override
-  public void copyInto(final MemorySegment dest) {
+  public void copyTo(final MemorySegment dest) {
     requireNonNull(dest);
     dest.copyFrom(this.segment);
   }
 
   @Override
-  public void copyInto(final Path path) throws IOException {
+  public void copyTo(final Path path) throws IOException {
     requireNonNull(path);
     try (var dest =
            MemorySegment.mapFile(path, 0, this.size(), FileChannel.MapMode.READ_WRITE)) {
@@ -352,7 +359,7 @@ public abstract class AbstractCartridge implements Cartridge {
   }
 
   @Override
-  public void copyInto(final OutputStream stream) throws IOException {
+  public void copyTo(final OutputStream stream) throws IOException {
     requireNonNull(stream);
     byte[] data = this.segment.toByteArray();
     stream.write(data);

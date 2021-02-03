@@ -114,7 +114,7 @@ public interface Cartridge extends CartridgeAccessors, AutoCloseable {
    * @throws IndexOutOfBoundsException if {@code this.size() > dest.byteSize()}
    * @throws IllegalStateException if either the destination segment or the cartridge are closed
    */
-  void copyInto(final MemorySegment dest);
+  void copyTo(final MemorySegment dest);
 
   /**
    * Copies the cartridge contents to the given path.
@@ -123,7 +123,7 @@ public interface Cartridge extends CartridgeAccessors, AutoCloseable {
    * @throws IOException if an I/O error occurs
    * @throws IllegalStateException if the cartridge is closed
    */
-  void copyInto(final Path path) throws IOException;
+  void copyTo(final Path path) throws IOException;
 
   // TODO Remove array copy in AbstractCartridge to lift maximum size restriction
   /**
@@ -135,5 +135,5 @@ public interface Cartridge extends CartridgeAccessors, AutoCloseable {
    * @throws IOException if an I/O error occurs
    * @throws IllegalStateException if the cartridge is closed
    */
-  void copyInto(final OutputStream stream) throws IOException;
+  void copyTo(final OutputStream stream) throws IOException;
 }

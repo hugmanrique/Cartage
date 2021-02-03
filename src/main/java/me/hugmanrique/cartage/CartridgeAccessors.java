@@ -341,6 +341,15 @@ interface CartridgeAccessors {
    */
   void setBytes(final long offset, final byte[] source, final int sourceOffset, final int length);
 
+  // TODO Add back? I believe this is too niche
+  /*
+   * Copies the bytes
+   * @param sourceOffset
+   * @param destOffset
+   * @param length
+   *
+  void interCopy(final long sourceOffset, final long destOffset, final int length);*/
+
   // TODO Document CharacterCodingException
 
   /**
@@ -490,7 +499,4 @@ interface CartridgeAccessors {
    */
   @SuppressWarnings("UnusedReturnValue")
   int setUtf8(final long offset, final CharSequence sequence);
-
-  // TODO readCompressed methods
-  // TODO writeCompressed methods
 }
