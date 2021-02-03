@@ -1,5 +1,7 @@
 package me.hugmanrique.cartage;
 
+import static java.util.Objects.requireNonNull;
+
 import java.nio.ByteOrder;
 import jdk.incubator.foreign.MemorySegment;
 
@@ -14,7 +16,11 @@ public class DummyCartridge extends AbstractCartridge {
    * @param data the cartridge data
    * @param order the cartridge's byte order
    */
-  public DummyCartridge(final byte[] data, final ByteOrder order) {
+  public static DummyCartridge fromData(final byte[] data, final ByteOrder order) {
+    return new DummyCartridge(requireNonNull(data), requireNonNull(order));
+  }
+
+  private DummyCartridge(final byte[] data, final ByteOrder order) {
     super(MemorySegment.ofArray(data), order);
   }
 }

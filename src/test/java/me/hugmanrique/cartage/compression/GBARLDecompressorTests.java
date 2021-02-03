@@ -1,0 +1,72 @@
+package me.hugmanrique.cartage.compression;
+
+import static me.hugmanrique.cartage.DummyCartridge.fromData;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.nio.ByteOrder;
+import me.hugmanrique.cartage.Cartridge;
+import org.junit.jupiter.api.Test;
+
+/**
+ * Tests {@link GBARLDecompressor}.
+ */
+public class GBARLDecompressorTests {
+
+  private static final GBARLDecompressor DECOMPRESSOR = GBARLDecompressor.get();
+
+  @Test
+  void testInvalidHeader() {
+    Cartridge cartridge = fromData(new byte[3], ByteOrder.LITTLE_ENDIAN);
+    assertThrows(DecompressionException.class, () -> DECOMPRESSOR.decompress(cartridge));
+    assertThrows(DecompressionException.class, () -> DECOMPRESSOR.decompress(cartridge, 2));
+  }
+
+  @Test
+  void testEmpty() {
+    var header = new byte[] { 0x30, 0, 0, 0 };
+    byte[] result = DECOMPRESSOR.decompress(fromData(header, ByteOrder.BIG_ENDIAN));
+    assertEquals(0, result.length);
+
+    header = new byte[] { 0, 0, 0, 0x30 };
+    result = DECOMPRESSOR.decompress(fromData(header, ByteOrder.LITTLE_ENDIAN));
+    assertEquals(0, result.length);
+  }
+
+  @Test
+  void testLiteralRun() {
+    var compressed = new byte[] {
+      0x30, 0, 0, 5, // header
+      5, (byte) 0xF0, 0x0, (byte) 0xBA, 0x12, 0x34 // literal run of 5 bytes
+    };
+    byte[] result = DECOMPRESSOR.decompress(fromData(compressed, ByteOrder.BIG_ENDIAN));
+    assertEquals(5, result.length);
+    assertEquals((byte) 0xF0, result[0]);
+    assertEquals(0, result[1]);
+    assertEquals((byte) 0xBA, result[2]);
+    assertEquals(0x12, result[3]);
+    assertEquals(0x34, result[4]);
+  }
+
+  @Test
+  void testLiteralRunTooShortThrows() {
+    var compressed = new byte[] {
+      0x30, 0, 0, 4,
+      4, 1, 2, 3 // only 3 bytes, expected 4
+    };
+    assertThrows(DecompressionException.class, () ->
+      DECOMPRESSOR.decompress(fromData(compressed, ByteOrder.BIG_ENDIAN)));
+  }
+
+  @Test
+  void testReplicatedRun() {
+
+  }
+
+  @Test
+  void testMix() {
+
+  }
+}
