@@ -23,8 +23,7 @@ public final class GBALZ77Decompressor implements Decompressor {
   private static final byte MAGIC_NUMBER = 0x10;
   private static final int DECOMPRESSED_LENGTH = 0xFFFFFF;
   private static final int BLOCK_COUNT = 8;
-  private static final int DISP_MSB = 0xF;
-  private static final int COUNT = 0xF0;
+  private static final int DISP_MSB = 0x0F;
 
   private GBALZ77Decompressor() {}
 
@@ -43,11 +42,11 @@ public final class GBALZ77Decompressor implements Decompressor {
       while (index < length) {
         // The compressed data is divided in groups of 8 blocks. A flag byte indicates the type of
         // each block, where a 0 bit specifies the block data byte should be copied verbatim; and
-        // a 1 bit indicates the block is compressed, in which case the first data byte contains
+        // a 1 bit indicates the block is compressed, in which case the 2 data bytes contain
         // a displacement and the number of bytes to copy (minus 3) within the result array.
         final byte flags = cartridge.readByte();
         for (int i = 0; i < BLOCK_COUNT; i++) {
-          boolean compressed = (flags & (1 << i)) != 0;
+          boolean compressed = (flags & (0x80 >> i)) != 0;
           if (compressed) {
             // Copy (count + 3) bytes starting at offset (length - displacement - 1) of result
             // into result at offset index through (index + count + 3). The length and displacement
@@ -57,6 +56,10 @@ public final class GBALZ77Decompressor implements Decompressor {
             int displacement = (meta & DISP_MSB) << 8;
             displacement |= cartridge.readByte(); // the LS 8 bits
 
+            if (displacement >= length) {
+              throw new DecompressionException("Invalid displacement " + displacement
+                  + " for uncompressed length " + length);
+            }
             System.arraycopy(result, length - displacement - 1, result, index, count);
             index += count;
           } else {
