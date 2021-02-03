@@ -31,7 +31,8 @@ public final class RLUnCompDecompressor implements Decompressor {
   public byte[] decompress(final Cartridge cartridge, final int start) {
     // TODO Check cartridge.remaining >= 4
     int offset = start;
-    final int header = cartridge.getInt(offset++);
+    final int header = cartridge.getInt(offset);
+    offset += 4;
     if ((header >>> 24) != MAGIC_NUMBER) {
       throw new DecompressionException("Cannot decompress non-RLE-encoded data");
     }

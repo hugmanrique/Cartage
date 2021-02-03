@@ -251,7 +251,7 @@
     <module name="AbbreviationAsWordInName">
       <property name="ignoreFinal" value="false"/>
       <property name="allowedAbbreviationLength" value="3"/>
-      <!-- Cartage abbreviations-->
+      <!-- Cartage abbreviations -->
       <property name="allowedAbbreviations" value="DACS" />
       <property name="tokens"
                 value="CLASS_DEF, INTERFACE_DEF, ENUM_DEF, ANNOTATION_DEF, ANNOTATION_FIELD_DEF,

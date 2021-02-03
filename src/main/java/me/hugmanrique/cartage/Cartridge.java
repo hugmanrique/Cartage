@@ -6,6 +6,7 @@ import me.hugmanrique.cartage.gba.GBACartridge;
 
 // TODO Tweak javadoc
 // TODO Document closing explicitly is required
+// TODO Add @throws when closed to all accessor methods
 /**
  * Represents the contents of a cartridge as a byte buffer.
  *
