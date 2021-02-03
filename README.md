@@ -9,17 +9,7 @@
 
 ## Installation
 
-Requires Java 15 or later.
-
-### Maven
-
-```xml
-<dependency>
-  <groupId>me.hugmanrique</groupId>
-  <artifactId>cartage</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
-</dependency>
-```
+Requires OpenJDK build [16-panama+3-385](https://jdk.java.net/panama/) or later.
 
 ### Gradle
 
@@ -31,6 +21,16 @@ repositories {
 dependencies {
   compile 'me.hugmanrique:cartage:0.0.1-SNAPSHOT'
 }
+```
+
+### Maven
+
+```xml
+<dependency>
+  <groupId>me.hugmanrique</groupId>
+  <artifactId>cartage</artifactId>
+  <version>0.0.1-SNAPSHOT</version>
+</dependency>
 ```
 
 ## Supported platforms
