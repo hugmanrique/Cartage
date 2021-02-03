@@ -5,7 +5,7 @@ import static me.hugmanrique.cartage.compression.GBACompression.checkCompression
 import me.hugmanrique.cartage.Cartridge;
 
 /**
- * Implements the LZ77UnCompRead, present in the BIOS of the GBA and Nintendo DS.
+ * Implements the LZ77UnCompRead algorithm, present in the BIOS of the GBA and Nintendo DS.
  *
  * @see <a href="https://problemkaputt.de/gbatek.htm#biosdecompressionfunctions">GBATEK</a>
  */
