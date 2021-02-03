@@ -32,7 +32,7 @@ public final class GBARLDecompressor implements Decompressor {
     try {
       final int header = cartridge.readInt();
       if ((header >>> 24) != MAGIC_NUMBER) {
-        throw new DecompressionException("Cannot decompress non-RLE-encoded data");
+        throw new DecompressionException("Cannot decompress non-RLE-compressed data");
       }
 
       final int length = header & DECOMPRESSED_LENGTH;
@@ -62,7 +62,7 @@ public final class GBARLDecompressor implements Decompressor {
       }
       return result;
     } catch (final IndexOutOfBoundsException e) {
-      throw new DecompressionException("Got corrupted RLE-encoded data", e);
+      throw new DecompressionException("Got corrupted RLE-compressed data", e);
     }
   }
 }

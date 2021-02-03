@@ -20,10 +20,53 @@ public final class GBALZ77Decompressor implements Decompressor {
     return INSTANCE;
   }
 
+  private static final byte MAGIC_NUMBER = 0x10;
+  private static final int DECOMPRESSED_LENGTH = 0xFFFFFF;
+  private static final int BLOCK_COUNT = 8;
+  private static final int DISP_MSB = 0xF;
+  private static final int COUNT = 0xF0;
+
   private GBALZ77Decompressor() {}
 
   @Override
   public byte[] decompress(final Cartridge cartridge) throws DecompressionException {
-    return new byte[0];
+    try {
+      final int header = cartridge.readInt();
+      if ((header >>> 24) != MAGIC_NUMBER) {
+        throw new DecompressionException("Cannot decompress non-LZ77-compressed data");
+      }
+
+      final int length = header & DECOMPRESSED_LENGTH;
+      final byte[] result = new byte[length];
+      int index = 0;
+
+      while (index < length) {
+        // The compressed data is divided in groups of 8 blocks. A flag byte indicates the type of
+        // each block, where a 0 bit specifies the block data byte should be copied verbatim; and
+        // a 1 bit indicates the block is compressed, in which case the first data byte contains
+        // a displacement and the number of bytes to copy (minus 3) within the result array.
+        final byte flags = cartridge.readByte();
+        for (int i = 0; i < BLOCK_COUNT; i++) {
+          boolean compressed = (flags & (1 << i)) != 0;
+          if (compressed) {
+            // Copy (count + 3) bytes starting at offset (length - displacement - 1) of result
+            // into result at offset index through (index + count + 3). The length and displacement
+            // values are contained in the next 2 bytes. Their layout is a bit unnatural.
+            int meta = cartridge.readByte();
+            final int count = (meta >> 4) + 3;
+            int displacement = (meta & DISP_MSB) << 8;
+            displacement |= cartridge.readByte(); // the LS 8 bits
+
+            System.arraycopy(result, length - displacement - 1, result, index, count);
+            index += count;
+          } else {
+            result[index++] = cartridge.readByte();
+          }
+        }
+      }
+      return result;
+    } catch (final IndexOutOfBoundsException e) {
+      throw new DecompressionException("Got corrupted LZ77-compressed data", e);
+    }
   }
 }

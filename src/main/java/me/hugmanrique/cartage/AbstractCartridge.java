@@ -132,6 +132,16 @@ public abstract class AbstractCartridge implements Cartridge {
   }
 
   @Override
+  public int readUnsignedShort() {
+    return Short.toUnsignedInt(this.readShort());
+  }
+
+  @Override
+  public int getUnsignedShort(final long offset) {
+    return Short.toUnsignedInt(this.getShort(offset));
+  }
+
+  @Override
   public void writeShort(final short value) {
     this.setShort(this.offset, value);
     this.offset += Short.BYTES;
@@ -140,6 +150,16 @@ public abstract class AbstractCartridge implements Cartridge {
   @Override
   public void setShort(final long offset, final short value) {
     MemoryAccess.setShortAtOffset(this.segment, offset, this.order, value);
+  }
+
+  @Override
+  public void writeUnsignedShort(final int value) {
+    this.writeShort((short) (value & 0xFFFF));
+  }
+
+  @Override
+  public void setUnsignedShort(final long offset, final int value) {
+    this.setShort(offset, (short) (value & 0xFFFF));
   }
 
   @Override

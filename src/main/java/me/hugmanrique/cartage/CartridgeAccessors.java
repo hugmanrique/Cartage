@@ -102,6 +102,26 @@ interface CartridgeAccessors {
   short getShort(final long offset);
 
   /**
+   * Reads the unsigned short at the cartridge's current offset, and then increments the offset by
+   * {@link Short#BYTES}.
+   *
+   * @return the unsigned short value at the current offset
+   * @throws IndexOutOfBoundsException if {@link Cartridge#remaining()} is less than
+   *         {@link Short#BYTES}.
+   */
+  int readUnsignedShort();
+
+  /**
+   * Reads the unsigned short at the given offset.
+   *
+   * @param offset the offset to read from
+   * @return the unsigned short value at the given offset
+   * @throws IndexOutOfBoundsException if the given offset is out of bounds, i.e. less than 0 or
+   *         greater than {@code {@link Cartridge#size()} - {@link Short#BYTES}}
+   */
+  int getUnsignedShort(final long offset);
+
+  /**
    * Writes the given short at the cartridge's current offset, and then increments
    * the offset by {@link Short#BYTES}.
    *
@@ -120,6 +140,26 @@ interface CartridgeAccessors {
    *         greater than {@code ({@link Cartridge#size()} - {@link Short#BYTES})}
    */
   void setShort(final long offset, final short value);
+
+  /**
+   * Writes the given unsigned short at the cartridge's current offset, and then increments
+   * the offset by {@link Short#BYTES}.
+   *
+   * @param value the unsigned short value to write
+   * @throws IndexOutOfBoundsException if {@link Cartridge#remaining()} is less than
+   *         {@link Short#BYTES}
+   */
+  void writeUnsignedShort(final int value);
+
+  /**
+   * Writes the given unsigned short at the given offset.
+   *
+   * @param offset the offset to write to
+   * @param value the unsigned short value to write
+   * @throws IndexOutOfBoundsException if the given offset is out of bounds, i.e. less than 0 or
+   *         greater than {@code ({@link Cartridge#size()} - {@link Short#BYTES})}
+   */
+  void setUnsignedShort(final long offset, final int value);
 
   /**
    * Reads the int at the cartridge's current offset, and then increments
