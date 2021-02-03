@@ -2,9 +2,13 @@ package me.hugmanrique.cartage;
 
 import static java.util.Objects.requireNonNull;
 
+import java.io.IOException;
+import java.io.OutputStream;
 import java.nio.ByteOrder;
+import java.nio.channels.FileChannel;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Path;
 import java.util.Objects;
 import jdk.incubator.foreign.MemoryAccess;
 import jdk.incubator.foreign.MemorySegment;
@@ -325,6 +329,22 @@ public abstract class AbstractCartridge implements Cartridge {
   @Override
   public int setUtf8(final long offset, final CharSequence sequence) {
     return this.setString(offset, sequence, StandardCharsets.UTF_8);
+  }
+
+  @Override
+  public void writeTo(final Path path) throws IOException {
+    requireNonNull(path);
+    try (var dest =
+           MemorySegment.mapFile(path, 0, this.size(), FileChannel.MapMode.READ_WRITE)) {
+      dest.copyFrom(this.segment);
+    }
+  }
+
+  @Override
+  public void writeTo(final OutputStream stream) throws IOException {
+    requireNonNull(stream);
+    byte[] data = this.segment.toByteArray();
+    stream.write(data);
   }
 
   @Override

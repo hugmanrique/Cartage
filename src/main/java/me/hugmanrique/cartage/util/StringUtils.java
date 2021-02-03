@@ -3,7 +3,7 @@ package me.hugmanrique.cartage.util;
 import static java.util.Objects.requireNonNull;
 
 /**
- * {@link String} related utilities.
+ * {@link String}-related utilities.
  */
 public final class StringUtils {
 

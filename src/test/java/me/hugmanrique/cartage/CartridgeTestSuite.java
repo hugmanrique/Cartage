@@ -4,6 +4,7 @@ import static java.util.Objects.requireNonNull;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.TestInstance;
 
@@ -38,5 +39,10 @@ public abstract class CartridgeTestSuite<T extends Cartridge> {
   @BeforeEach
   void beforeAll() {
     this.reset();
+  }
+
+  @AfterAll
+  void afterAll() {
+    this.cartridge.close();
   }
 }

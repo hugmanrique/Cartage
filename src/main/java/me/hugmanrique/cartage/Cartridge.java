@@ -1,11 +1,13 @@
 package me.hugmanrique.cartage;
 
+import java.io.IOException;
+import java.io.OutputStream;
 import java.nio.ByteOrder;
+import java.nio.file.Path;
 import me.hugmanrique.cartage.gb.GBCartridge;
 import me.hugmanrique.cartage.gba.GBACartridge;
 
 // TODO Tweak javadoc
-// TODO Add @throws when closed to all accessor methods
 // TODO Document thread confinement, likely to change on future Panama versions
 /**
  * Represents the contents of a cartridge as a byte buffer.
@@ -91,20 +93,24 @@ public interface Cartridge extends CartridgeAccessors, AutoCloseable {
   @Override
   void close();
 
-  // TODO Make static utility methods?
-  /*
+  /**
    * Writes the cartridge contents to the given path.
    *
    * @param path the path
    * @throws IOException if an I/O error occurs
-   *
+   * @throws IllegalStateException if the cartridge is closed
+   */
   void writeTo(final Path path) throws IOException;
 
-  /*
+  // TODO Remove array copy in AbstractCartridge to lift maximum size restriction
+  /**
    * Writes the cartridge contents to the given stream. The stream is not closed.
    *
    * @param stream the output stream
+   * @throws UnsupportedOperationException if this cartridge's contents cannot be copied into
+   *         a {@link byte[]} instance, e.g. its size is greater than {@link Integer#MAX_VALUE}
    * @throws IOException if an I/O error occurs
-   *
-  void writeTo(final OutputStream stream) throws IOException;*/
+   * @throws IllegalStateException if the cartridge is closed
+   */
+  void writeTo(final OutputStream stream) throws IOException;
 }
