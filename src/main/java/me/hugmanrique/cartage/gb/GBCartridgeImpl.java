@@ -1,19 +1,21 @@
 package me.hugmanrique.cartage.gb;
 
+import static java.util.Objects.requireNonNull;
 import static me.hugmanrique.cartage.gb.GBCartridgeHeaderImpl.GLOBAL_CHECKSUM_ADDR;
 
 import java.nio.ByteOrder;
-import me.hugmanrique.cartage.SimpleCartridge;
+import jdk.incubator.foreign.MemorySegment;
+import me.hugmanrique.cartage.AbstractCartridge;
 
 /**
  * The default {@link GBCartridge} implementation.
  */
-final class GBCartridgeImpl extends SimpleCartridge implements GBCartridge {
+final class GBCartridgeImpl extends AbstractCartridge implements GBCartridge {
 
   private final GBCartridge.Header header;
 
   GBCartridgeImpl(final byte[] data) {
-    super(data, ByteOrder.LITTLE_ENDIAN);
+    super(MemorySegment.ofArray(requireNonNull(data)), ByteOrder.LITTLE_ENDIAN);
     this.header = new GBCartridgeHeaderImpl(this);
   }
 

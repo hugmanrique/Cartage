@@ -13,6 +13,9 @@ import me.hugmanrique.cartage.CartridgeTestSuite;
 import me.hugmanrique.cartage.TestUtils;
 import org.junit.jupiter.api.Test;
 
+/**
+ * Tests the default {@link GBCartridge} implementation.
+ */
 public class GBCartridgeTests extends CartridgeTestSuite<GBCartridge> {
 
   private static final Path SUPER_MARIO = TestUtils.getCartridge("sml.gb");
@@ -84,11 +87,11 @@ public class GBCartridgeTests extends CartridgeTestSuite<GBCartridge> {
     assertEquals(newTitle, header.title());
 
     assertThrows(IllegalArgumentException.class, () ->
-      header.setTitle("abc"), "16 chars");
+        header.setTitle("abc"), "16 chars");
     assertThrows(IllegalArgumentException.class, () ->
-      header.setTitle("áááááááááááááááá"), "ASCII");
+        header.setTitle("áááááááááááááááá"), "ASCII");
     assertThrows(IllegalArgumentException.class, () ->
-      header.setTitle("super marioland\0"), "uppercase");
+        header.setTitle("super marioland\0"), "uppercase");
   }
 
   @Test
@@ -99,11 +102,11 @@ public class GBCartridgeTests extends CartridgeTestSuite<GBCartridge> {
     header.setManufacturer(newManufacturer);
     assertEquals(newManufacturer, header.manufacturer());
     assertThrows(IllegalArgumentException.class, () ->
-      header.setManufacturer("abc"), "4 chars");
+        header.setManufacturer("abc"), "4 chars");
     assertThrows(IllegalArgumentException.class, () ->
-      header.setManufacturer("éíóú"), "ASCII");
+        header.setManufacturer("éíóú"), "ASCII");
     assertThrows(IllegalArgumentException.class, () ->
-      header.setManufacturer("abcd\0"), "uppercase");
+        header.setManufacturer("abcd\0"), "uppercase");
   }
 
   @Test

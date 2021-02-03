@@ -9,7 +9,7 @@ import me.hugmanrique.cartage.Cartridge;
  */
 public interface Compressor {
 
-  byte[] compress(final Cartridge cartridge, final int offset, final int length);
+  byte[] compress(final Cartridge cartridge, final long offset, final int length);
 
   default byte[] compress(final Cartridge cartridge, final int length) {
     return this.compress(cartridge, cartridge.offset(), length);

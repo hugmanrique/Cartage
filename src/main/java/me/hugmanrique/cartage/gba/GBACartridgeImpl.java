@@ -1,17 +1,20 @@
 package me.hugmanrique.cartage.gba;
 
+import static java.util.Objects.requireNonNull;
+
 import java.nio.ByteOrder;
-import me.hugmanrique.cartage.SimpleCartridge;
+import jdk.incubator.foreign.MemorySegment;
+import me.hugmanrique.cartage.AbstractCartridge;
 
 /**
  * The default {@link GBACartridge} implementation.
  */
-final class GBACartridgeImpl extends SimpleCartridge implements GBACartridge {
+final class GBACartridgeImpl extends AbstractCartridge implements GBACartridge {
 
   private final GBACartridge.Header header;
 
-  public GBACartridgeImpl(final byte[] data) {
-    super(data, ByteOrder.LITTLE_ENDIAN);
+  GBACartridgeImpl(final byte[] data) {
+    super(MemorySegment.ofArray(requireNonNull(data)), ByteOrder.LITTLE_ENDIAN);
     this.header = new GBACartridgeHeaderImpl(this);
   }
 
