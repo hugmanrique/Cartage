@@ -2,14 +2,14 @@
 
 [![artifact][artifact]][artifact-url]
 [![javadoc][javadoc]][javadoc-url]
-[![tests][tests]][tests-url]
+[![action][action]][action-url]
 [![license][license]][license-url]
 
 **Cartage** provides utilities for reading and writing retro console cartridges.
 
 ## Installation
 
-Requires OpenJDK build [16-panama+3-385](https://jdk.java.net/panama/) or later.
+Requires Java 16 or later.
 
 ### Gradle
 
@@ -70,7 +70,7 @@ Redistributing these files is illegal, so you need to dump these games by yourse
 [artifact-url]: https://search.maven.org/artifact/me.hugmanrique/cartage
 [javadoc]: https://javadoc.io/badge2/me.hugmanrique/cartage/javadoc.svg
 [javadoc-url]: https://javadoc.io/doc/me.hugmanrique/cartage
-[tests]: https://img.shields.io/travis/hugmanrique/Cartage/main.svg
-[tests-url]: https://travis-ci.org/hugmanrique/Cartage
+[action]: https://github.com/hugmanrique/Cartage/actions/workflows/build.yml/badge.svg
+[action-url]: https://github.com/hugmanrique/Cartage/actions/workflows/build.yml
 [license]: https://img.shields.io/github/license/hugmanrique/Cartage.svg
 [license-url]: LICENSE
