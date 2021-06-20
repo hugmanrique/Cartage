@@ -18,6 +18,9 @@ import me.hugmanrique.cartage.Cartridge;
  */
 public interface Decompressor {
 
+  // TODO Most decompressors throw IndexOutOfBoundsException when reading from cartridges
+  //  and catching them incurs some performance loss. Deprecate DecompressionException?
+
   /**
    * Decompresses data starting at the given offset from the given cartridge. The offset of the
    * cartridge is not modified.

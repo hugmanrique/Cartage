@@ -26,6 +26,7 @@ public class GBARLDecompressorTests {
   @Test
   void testInvalidHeader() {
     var cartridge = fromData(new byte[3], ByteOrder.LITTLE_ENDIAN);
+
     assertThrows(DecompressionException.class, () -> DECOMPRESSOR.decompress(cartridge));
     assertThrows(DecompressionException.class, () -> DECOMPRESSOR.decompress(cartridge, 2));
   }
@@ -35,25 +36,31 @@ public class GBARLDecompressorTests {
     var header = new byte[] { 0x30, 0, 0, 0 };
     var cartridge = fromData(header, ByteOrder.BIG_ENDIAN);
     byte[] result = DECOMPRESSOR.decompress(cartridge);
-    assertEquals(0, result.length);
-    assertEquals(4, cartridge.offset(), "offset is modified");
 
-    header = new byte[] { 0x12, 0x34, 0, 0, 0, 0x30 };
-    cartridge = fromData(header, ByteOrder.LITTLE_ENDIAN);
+    assertEquals(0, result.length);
+    assertEquals(4, cartridge.offset(), "offset is incremented");
+  }
+
+  @Test
+  void testEmptyFromOffset() {
+    final var header = new byte[] { 0x12, 0x34, 0, 0, 0, 0x30 };
+    final var cartridge = fromData(header, ByteOrder.LITTLE_ENDIAN);
     cartridge.setOffset(5);
-    result = DECOMPRESSOR.decompress(cartridge, 2);
+    final byte[] result = DECOMPRESSOR.decompress(cartridge, 2);
+
     assertEquals(0, result.length);
     assertEquals(5, cartridge.offset(), "offset is preserved");
   }
 
   @Test
   void testLiteralRun() {
-    var compressed = new byte[] {
+    final var compressed = new byte[] {
         0x30, 0, 0, 5, // header
         5, (byte) 0xF0, 0x0, (byte) 0xBA, 0x12, 0x34 // literal run of 5 bytes
       };
-    var cartridge = fromData(compressed, ByteOrder.BIG_ENDIAN);
-    byte[] result = DECOMPRESSOR.decompress(cartridge);
+    final var cartridge = fromData(compressed, ByteOrder.BIG_ENDIAN);
+    final byte[] result = DECOMPRESSOR.decompress(cartridge);
+
     assertEquals(5, result.length);
     assertEquals((byte) 0xF0, result[0]);
     assertEquals(0, result[1]);
@@ -65,10 +72,11 @@ public class GBARLDecompressorTests {
 
   @Test
   void testLiteralRunTooShortThrows() {
-    var compressed = new byte[] {
+    final var compressed = new byte[] {
         0x30, 0, 0, 4,
         4, 1, 2, 3 // only 3 bytes, expected 4
       };
+
     assertThrows(DecompressionException.class, () ->
         DECOMPRESSOR.decompress(fromData(compressed, ByteOrder.BIG_ENDIAN)));
   }

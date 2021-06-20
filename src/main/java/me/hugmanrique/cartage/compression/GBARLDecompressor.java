@@ -31,8 +31,10 @@ public final class GBARLDecompressor implements Decompressor {
 
   private static final byte MAGIC_NUMBER = 0x30;
   private static final int DECOMPRESSED_LENGTH = 0xFFFFFF;
-  private static final byte REPLICATE_RUN = (byte) 0x80;
-  private static final byte RUN_LENGTH = ~REPLICATE_RUN;
+  private static final byte REPEAT_RUN = (byte) 0x80;
+  private static final byte RUN_LENGTH = ~REPEAT_RUN;
+  private static final int REPEAT_BASELINE = 3;
+  private static final int COPY_BASELINE = 1;
 
   private GBARLDecompressor() {}
 
@@ -52,17 +54,17 @@ public final class GBARLDecompressor implements Decompressor {
         // a given byte should be repeated a number of times (1). The remaining bits specify
         // the length of the run.
         final byte flag = cartridge.readByte();
-        final boolean replicate = (flag & REPLICATE_RUN) != 0;
+        final boolean repeat = (flag & REPEAT_RUN) != 0;
         final int runLength = flag & RUN_LENGTH;
 
-        if (replicate) {
+        if (repeat) {
           byte value = cartridge.readByte();
-          // TODO Replace by array copy, segments don't provide this yet.
-          for (int i = 0; i < runLength + 2; i++) { // 2 repetition baseline
+          for (int i = 0; i < runLength + REPEAT_BASELINE; i++) {
             result[index++] = value;
           }
         } else {
-          for (int i = 0; i < runLength; i++) {
+          // TODO Replace by array copy, segments don't provide this yet.
+          for (int i = 0; i < runLength + COPY_BASELINE; i++) {
             result[index++] = cartridge.readByte();
           }
         }

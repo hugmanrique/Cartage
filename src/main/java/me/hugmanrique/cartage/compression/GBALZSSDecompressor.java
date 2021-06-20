@@ -16,29 +16,30 @@ import me.hugmanrique.cartage.Cartridge;
  *
  * @see <a href="https://problemkaputt.de/gbatek.htm#biosdecompressionfunctions">GBATEK</a>
  */
-public final class GBALZ77Decompressor implements Decompressor {
+public final class GBALZSSDecompressor implements Decompressor {
 
-  private static final GBALZ77Decompressor INSTANCE = new GBALZ77Decompressor();
+  private static final GBALZSSDecompressor INSTANCE = new GBALZSSDecompressor();
 
   /**
    * Returns a decompressor instance.
    *
    * @return the decompressor
    */
-  public static GBALZ77Decompressor get() {
+  public static GBALZSSDecompressor get() {
     return INSTANCE;
   }
 
   private static final byte MAGIC_NUMBER = 0x10;
   private static final int DECOMPRESSED_LENGTH = 0xFFFFFF;
   private static final int BLOCK_COUNT = 8;
+  private static final int DISP_BASELINE = 1;
   private static final int DISP_MSB = 0x0F;
 
   @Override
   public byte[] decompress(final Cartridge cartridge) throws DecompressionException {
     try {
       final int header = cartridge.readInt();
-      checkCompressionType(header, MAGIC_NUMBER, "LZ77");
+      checkCompressionType(header, MAGIC_NUMBER, "LZSS");
 
       final int length = header & DECOMPRESSED_LENGTH;
       final byte[] result = new byte[length];
@@ -53,19 +54,23 @@ public final class GBALZ77Decompressor implements Decompressor {
         for (int i = 0; i < BLOCK_COUNT; i++) {
           boolean compressed = (flags & (0x80 >> i)) != 0;
           if (compressed) {
-            // Copy (count + 3) bytes starting at offset (length - displacement - 1) of result
-            // into result at offset index through (index + count + 3). The length and displacement
-            // values are contained in the next 2 bytes. Their layout is a bit unnatural.
-            int meta = cartridge.readByte();
-            final int count = (meta >> 4) + 3;
-            int displacement = (meta & DISP_MSB) << 8;
-            displacement |= cartridge.readByte(); // the LS 8 bits
+            // Copy count bytes starting at offset (index - displacement) of result into
+            // result starting at offset index. The length and displacement values are
+            // contained in the next 2 bytes. Their layout is a bit unnatural.
+            // Some Pokémon Ruby/Sapphire tilesets have an invalid count value, i.e.
+            // greater than the remaining number of bytes; set this upper bound.
+            final int meta = cartridge.readByte();
+            final int count = Math.min((meta >> 4) + 3, length - index);
+            final int displacement = DISP_BASELINE
+                + (((meta & DISP_MSB) << 8) // the most-significant 4 bits
+                    | cartridge.readByte()); // the least-significant 8 bits
 
-            if (displacement >= length) {
+            final int srcPos = index - displacement;
+            if (srcPos < 0) {
               throw new DecompressionException("Invalid displacement " + displacement
-                  + " for uncompressed length " + length);
+                  + " at index " + index);
             }
-            System.arraycopy(result, length - displacement - 1, result, index, count);
+            System.arraycopy(result, srcPos, result, index, count);
             index += count;
           } else {
             result[index++] = cartridge.readByte();
@@ -74,9 +79,9 @@ public final class GBALZ77Decompressor implements Decompressor {
       }
       return result;
     } catch (final IndexOutOfBoundsException e) {
-      throw new DecompressionException("Got corrupted LZ77-compressed data", e);
+      throw new DecompressionException("Got corrupted LZSS-compressed data", e);
     }
   }
 
-  private GBALZ77Decompressor() {}
+  private GBALZSSDecompressor() {}
 }

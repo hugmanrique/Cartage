@@ -24,6 +24,8 @@ import org.junit.jupiter.api.TestInstance;
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public abstract class CartridgeTestSuite<T extends Cartridge> {
 
+  // TODO Remove shared state between different test methods, it's ugly
+
   protected final T cartridge;
   private final MemorySegment original; // used to restore contents after each test
 
