@@ -5,8 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-module me.hugmanrique.cartage {
-  exports me.hugmanrique.cartage;
-  requires transitive jdk.incubator.foreign;
-  requires org.checkerframework.checker.qual;
+open module me.hugmanrique.cartage.tests {
+  requires me.hugmanrique.cartage;
+  requires org.junit.jupiter.api;
 }
