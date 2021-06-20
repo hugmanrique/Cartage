@@ -76,6 +76,11 @@ public abstract class AbstractCartridge implements Cartridge {
   }
 
   @Override
+  public void skip(final long count) {
+    this.setOffset(this.offset + count);
+  }
+
+  @Override
   public void close() {
     if (!this.segment.isAlive()) {
       throw new IllegalStateException("This cartridge is already closed");

@@ -93,6 +93,16 @@ public interface Cartridge extends CartridgeAccessors, AutoCloseable {
   boolean hasRemaining();
 
   /**
+   * Increases the cartridge's offset.
+   *
+   * @param count the number of bytes to skip
+   * @throws IndexOutOfBoundsException if the given count is less than 0 or greater than {@link
+   *     #remaining()}
+   * @throws IllegalStateException if the cartridge is closed
+   */
+  void skip(final long count);
+
+  /**
    * Closes the cartridge. Once closed, any subsequent operation on the cartridge will fail with
    * {@link IllegalStateException}.
    *

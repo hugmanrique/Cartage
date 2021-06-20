@@ -103,7 +103,7 @@ record GBACartridgeHeaderImpl(GBACartridge cartridge) implements GBACartridge.He
     // Last 24 bytes of instruction contain the signed address offset.
     // Shift left to discard opcode and set sign bit, and then shift back,
     // converting from words to bytes (8 - 2 = 6).
-    int offset = ((instr << 8) >>> 6); // bytes
+    int offset = ((instr << 8) >> 6); // bytes
     return ENTRY_INSTR_ADDR + offset;
   }
 
@@ -112,7 +112,7 @@ record GBACartridgeHeaderImpl(GBACartridge cartridge) implements GBACartridge.He
     if ((address & 0x3) != 0) {
       throw new IllegalArgumentException("Got non-word-aligned address" + address);
     }
-    int offset = (address - ENTRY_INSTR_ADDR) >>> 2; // words
+    int offset = (address - ENTRY_INSTR_ADDR) >> 2; // words
     if (Math.abs(offset) > MAX_BRANCH_OFFSET) {
       throw new IllegalArgumentException("Entry point address " + address + " is out of bounds");
     }

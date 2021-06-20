@@ -52,7 +52,7 @@ public final class GBALZSSDecompressor implements Decompressor {
         // a 1 bit indicates the block is compressed, in which case the 2 data bytes contain
         // a displacement and the number of bytes to copy (minus 3) within the result array.
         byte flags = cartridge.readByte();
-        for (int i = 0; i < BLOCK_COUNT; i++) {
+        for (int i = 0; i < BLOCK_COUNT; i++, flags <<= 1) {
           boolean compressed = (flags & COMPRESSED) != 0;
           if (compressed) {
             // Copy count bytes starting at offset (index - displacement) of result into
@@ -76,7 +76,6 @@ public final class GBALZSSDecompressor implements Decompressor {
           } else {
             result[index++] = cartridge.readByte();
           }
-          flags <<= 1;
         }
       }
       return result;
