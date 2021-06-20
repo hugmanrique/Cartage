@@ -14,7 +14,7 @@ import me.hugmanrique.cartage.util.StringUtils;
 /**
  * The default {@link GBCartridge.Header} implementation.
  */
-final class GBCartridgeHeaderImpl implements GBCartridge.Header {
+record GBCartridgeHeaderImpl(GBCartridge cartridge) implements GBCartridge.Header {
 
   private static final int ENTRY_POINT_ADDR = 0x100;
   private static final int LOGO_ADDR = 0x104;
@@ -61,8 +61,6 @@ final class GBCartridgeHeaderImpl implements GBCartridge.Header {
     StringUtils.requireUppercaseAscii(value);
     return StringUtils.padEnd(value, expectedLength, '\0');
   }
-
-  private final GBCartridge cartridge;
 
   GBCartridgeHeaderImpl(final GBCartridge cartridge) {
     this.cartridge = requireNonNull(cartridge);

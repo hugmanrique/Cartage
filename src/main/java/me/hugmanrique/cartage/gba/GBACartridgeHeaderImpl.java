@@ -16,7 +16,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 /**
  * The default {@link GBACartridge.Header} implementation.
  */
-final class GBACartridgeHeaderImpl implements GBACartridge.Header {
+record GBACartridgeHeaderImpl(GBACartridge cartridge) implements GBACartridge.Header {
 
   private static final int ENTRY_INSTR_ADDR = GBACartridge.Header.ENTRY_INSTRUCTION_ADDR;
   private static final int ENTRY_POINT_ADDR = 0x0;
@@ -76,9 +76,7 @@ final class GBACartridgeHeaderImpl implements GBACartridge.Header {
     }
   }
 
-  private final GBACartridge cartridge;
-
-  public GBACartridgeHeaderImpl(final GBACartridge cartridge) {
+  GBACartridgeHeaderImpl(final GBACartridge cartridge) {
     this.cartridge = requireNonNull(cartridge);
   }
 
