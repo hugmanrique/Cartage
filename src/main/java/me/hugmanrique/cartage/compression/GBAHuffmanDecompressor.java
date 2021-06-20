@@ -7,6 +7,8 @@
 
 package me.hugmanrique.cartage.compression;
 
+import static me.hugmanrique.cartage.compression.GBACompression.checkCompressionType;
+
 import me.hugmanrique.cartage.Cartridge;
 
 /**
@@ -28,12 +30,20 @@ public final class GBAHuffmanDecompressor implements Decompressor {
   }
 
   private static final byte MAGIC_NUMBER = 0x20;
+  private static final int DATA_SIZE = 0xF;
+  private static final int DECOMPRESSED_LENGTH = 0xFFFFFF;
 
   private GBAHuffmanDecompressor() {}
 
   @Override
   public byte[] decompress(final Cartridge cartridge) throws DecompressionException {
     try {
+      final int header = cartridge.readInt();
+      checkCompressionType(header, MAGIC_NUMBER, "HF");
+
+      final int dataSize = (header >> 28) & DATA_SIZE; // bits
+      final int length = header & DECOMPRESSED_LENGTH;
+
       return new byte[0];
     } catch (final IndexOutOfBoundsException e) {
       throw new DecompressionException("Got corrupted Huffman-compressed data");

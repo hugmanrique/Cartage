@@ -32,6 +32,7 @@ public final class GBALZSSDecompressor implements Decompressor {
   private static final byte MAGIC_NUMBER = 0x10;
   private static final int DECOMPRESSED_LENGTH = 0xFFFFFF;
   private static final int BLOCK_COUNT = 8;
+  private static final int COMPRESSED = 0x80;
   private static final int DISP_BASELINE = 1;
   private static final int DISP_MSB = 0x0F;
 
@@ -50,9 +51,9 @@ public final class GBALZSSDecompressor implements Decompressor {
         // each block, where a 0 bit specifies the block data byte should be copied verbatim; and
         // a 1 bit indicates the block is compressed, in which case the 2 data bytes contain
         // a displacement and the number of bytes to copy (minus 3) within the result array.
-        final byte flags = cartridge.readByte();
+        byte flags = cartridge.readByte();
         for (int i = 0; i < BLOCK_COUNT; i++) {
-          boolean compressed = (flags & (0x80 >> i)) != 0;
+          boolean compressed = (flags & COMPRESSED) != 0;
           if (compressed) {
             // Copy count bytes starting at offset (index - displacement) of result into
             // result starting at offset index. The length and displacement values are
@@ -60,7 +61,7 @@ public final class GBALZSSDecompressor implements Decompressor {
             // Some Pokémon Ruby/Sapphire tilesets have an invalid count value, i.e.
             // greater than the remaining number of bytes; set this upper bound.
             final int meta = cartridge.readByte();
-            final int count = Math.min((meta >> 4) + 3, length - index);
+            final int count = Math.min((meta >>> 4) + 3, length - index);
             final int displacement = DISP_BASELINE
                 + (((meta & DISP_MSB) << 8) // the most-significant 4 bits
                     | cartridge.readByte()); // the least-significant 8 bits
@@ -75,6 +76,7 @@ public final class GBALZSSDecompressor implements Decompressor {
           } else {
             result[index++] = cartridge.readByte();
           }
+          flags <<= 1;
         }
       }
       return result;
