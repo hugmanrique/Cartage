@@ -27,6 +27,8 @@ public final class GBAHuffmanDecompressor implements Decompressor {
     return INSTANCE;
   }
 
+  private static final byte MAGIC_NUMBER = 0x20;
+
   private GBAHuffmanDecompressor() {}
 
   @Override

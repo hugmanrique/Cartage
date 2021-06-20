@@ -14,14 +14,9 @@ package me.hugmanrique.cartage.compression;
  */
 public final class GBACompression {
 
-  // Magic numbers
-  static final byte LZ77 = 0x10;
-  static final byte RL = 0x30;
-  static final byte HUFFMAN = 0x20;
-
   static void checkCompressionType(final int header, final byte expectedType, final String typeName)
       throws DecompressionException {
-    final int actual = (header >>> 24) & 0xF;
+    final int actual = (header >>> 24) & 0xFF;
     if (actual != expectedType) {
       throw new DecompressionException("Expected " + expectedType + " type for "
           + typeName + "-compressed data, got " + actual + " instead");

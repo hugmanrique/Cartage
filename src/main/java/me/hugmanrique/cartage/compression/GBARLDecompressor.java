@@ -29,6 +29,7 @@ public final class GBARLDecompressor implements Decompressor {
     return INSTANCE;
   }
 
+  private static final byte MAGIC_NUMBER = 0x30;
   private static final int DECOMPRESSED_LENGTH = 0xFFFFFF;
   private static final byte REPLICATE_RUN = (byte) 0x80;
   private static final byte RUN_LENGTH = ~REPLICATE_RUN;
@@ -39,7 +40,7 @@ public final class GBARLDecompressor implements Decompressor {
   public byte[] decompress(final Cartridge cartridge) throws DecompressionException {
     try {
       final int header = cartridge.readInt();
-      checkCompressionType(header, GBACompression.RL, "RL");
+      checkCompressionType(header, MAGIC_NUMBER, "RL");
 
       final int length = header & DECOMPRESSED_LENGTH;
       final byte[] result = new byte[length];

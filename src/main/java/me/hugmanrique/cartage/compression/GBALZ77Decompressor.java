@@ -29,17 +29,16 @@ public final class GBALZ77Decompressor implements Decompressor {
     return INSTANCE;
   }
 
+  private static final byte MAGIC_NUMBER = 0x10;
   private static final int DECOMPRESSED_LENGTH = 0xFFFFFF;
   private static final int BLOCK_COUNT = 8;
   private static final int DISP_MSB = 0x0F;
-
-  private GBALZ77Decompressor() {}
 
   @Override
   public byte[] decompress(final Cartridge cartridge) throws DecompressionException {
     try {
       final int header = cartridge.readInt();
-      checkCompressionType(header, GBACompression.LZ77, "LZ77");
+      checkCompressionType(header, MAGIC_NUMBER, "LZ77");
 
       final int length = header & DECOMPRESSED_LENGTH;
       final byte[] result = new byte[length];
@@ -78,4 +77,6 @@ public final class GBALZ77Decompressor implements Decompressor {
       throw new DecompressionException("Got corrupted LZ77-compressed data", e);
     }
   }
+
+  private GBALZ77Decompressor() {}
 }
