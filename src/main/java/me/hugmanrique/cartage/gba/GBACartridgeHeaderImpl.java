@@ -83,12 +83,13 @@ final class GBACartridgeHeaderImpl implements GBACartridge.Header {
   }
 
   /**
-   * Returns whether the given ARM7TDMI instruction is a {@code B} instruction.
-   * The condition is ignored.
+   * Returns whether the given ARM7TDMI instruction is a {@code B} instruction. The condition is
+   * ignored.
    *
    * @param instr the instruction
    * @return {@code true} if the instruction is a {@code B} instruction
-   * @see <a href="https://www.ecs.csun.edu/~smirzaei/docs/ece425/arm7tdmi_instruction_set_reference.pdf">Section 4.5 in the ARM7TDMI Instruction Set Reference</a>
+   * @see <a href="https://www.ecs.csun.edu/~smirzaei/docs/ece425/arm7tdmi_instruction_set_reference.pdf">Section
+   *     4.5 in the ARM7TDMI Instruction Set Reference</a>
    */
   private static boolean isBranchInstruction(final int instr) {
     return ((instr >> 24) & 0xF) == 0b1010;

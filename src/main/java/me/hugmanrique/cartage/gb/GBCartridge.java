@@ -19,7 +19,8 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 /**
  * A Game Boy cartridge.
  *
- * @see <a href="https://raw.githubusercontent.com/AntonioND/giibiiadvance/master/docs/TCAGBD.pdf">The Cycle-Accurate Game Boy Docs</a>
+ * @see <a href="https://raw.githubusercontent.com/AntonioND/giibiiadvance/master/docs/TCAGBD.pdf">The
+ *     Cycle-Accurate Game Boy Docs</a>
  * @see <a href="https://gbdev.io/pandocs/#the-cartridge-header">Pan Docs</a>
  */
 public interface GBCartridge extends Cartridge {
@@ -148,8 +149,8 @@ public interface GBCartridge extends Cartridge {
   }
 
   /**
-   * The header of a Game Boy cartridge.
-   * Changes to the header are reflected in the cartridge, and vice-versa.
+   * The header of a Game Boy cartridge. Changes to the header are reflected in the cartridge, and
+   * vice-versa.
    */
   interface Header {
 
@@ -160,15 +161,14 @@ public interface GBCartridge extends Cartridge {
      * It usually contains a {@code NOP} instruction followed by a {@code JP} or {@code CALL}.
      *
      * @return the entry point address
-     * @throws IllegalStateException if the entry point area contains no {@code JP} or {@code CALL}
-     *         instruction
+     * @throws IllegalStateException if the entry point area contains no {@code JP} or {@code
+     *     CALL} instruction
      */
     short entryPoint();
 
     /**
-     * Sets the entry point address.
-     * This writes a {@code NOP} instruction followed by an unconditional jump
-     * to the given address.
+     * Sets the entry point address. This writes a {@code NOP} instruction followed by an
+     * unconditional jump to the given address.
      *
      * @param entryPoint the entry point address
      */
@@ -193,8 +193,8 @@ public interface GBCartridge extends Cartridge {
      * Returns the Nintendo logo bitmap.
      *
      * <p>If incorrect, the console's boot procedure locks up in an infinite loop.
-     * Some console models partially verify the contents of the logo. For example,
-     * the GBC only verifies the first 18 bytes of the returned array.
+     * Some console models partially verify the contents of the logo. For example, the GBC only
+     * verifies the first 18 bytes of the returned array.
      *
      * @return a copy of the logo
      */
@@ -204,7 +204,8 @@ public interface GBCartridge extends Cartridge {
      * Copies the Nintendo logo bitmap into the given array.
      *
      * @param dest the destination array
-     * @throws IllegalArgumentException if the length of {@code dest} is not {@link #LOGO_LENGTH}
+     * @throws IllegalArgumentException if the length of {@code dest} is not {@link
+     *     #LOGO_LENGTH}
      * @see #logo() for details on verification
      */
     void logo(final byte[] dest);
@@ -213,7 +214,8 @@ public interface GBCartridge extends Cartridge {
      * Sets the Nintendo logo bitmap.
      *
      * @param source the logo
-     * @throws IllegalArgumentException if the length of {@code source} is not {@link #LOGO_LENGTH}
+     * @throws IllegalArgumentException if the length of {@code source} is not {@link
+     *     #LOGO_LENGTH}
      * @see #logo() for details on verification
      */
     void setLogo(final byte[] source);
@@ -237,7 +239,7 @@ public interface GBCartridge extends Cartridge {
      *
      * @param title the game title
      * @throws IllegalArgumentException if the value has a length greater than 16, or contains
-     *         non-ASCII or non-uppercase characters
+     *     non-ASCII or non-uppercase characters
      */
     void setTitle(final String title);
 
@@ -253,7 +255,7 @@ public interface GBCartridge extends Cartridge {
      *
      * @param manufacturer the game manufacturer
      * @throws IllegalArgumentException if the value has a length greater than 4, or contains
-     *         non-ASCII or non-uppercase characters
+     *     non-ASCII or non-uppercase characters
      */
     void setManufacturer(final String manufacturer);
 
@@ -457,16 +459,16 @@ public interface GBCartridge extends Cartridge {
     void setVersion(final byte version);
 
     /**
-     * Returns the checksum of some header data.
-     * If incorrect, the console's boot procedure locks up in an infinite loop.
+     * Returns the checksum of some header data. If incorrect, the console's boot procedure locks up
+     * in an infinite loop.
      *
      * @return the header checksum
      */
     byte checksum();
 
     /**
-     * Computes the checksum of some header data (as returned by {@link #checksum()}) from
-     * the current header contents.
+     * Computes the checksum of some header data (as returned by {@link #checksum()}) from the
+     * current header contents.
      *
      * @return the computed header checksum
      */
@@ -485,11 +487,12 @@ public interface GBCartridge extends Cartridge {
      * @return the computed checksum
      * @see #computeChecksum() to compute, but not overwrite, the header checksum
      */
+    @SuppressWarnings("UnusedReturnValue")
     byte setChecksum();
 
     /**
-     * Returns the checksum of the entire ROM.
-     * Unlike the header checksum, the console boots even if incorrect.
+     * Returns the checksum of the entire ROM. Unlike the header checksum, the console boots even if
+     * incorrect.
      *
      * @return the global checksum
      */

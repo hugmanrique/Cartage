@@ -7,6 +7,9 @@
 
 module me.hugmanrique.cartage {
   exports me.hugmanrique.cartage;
+  exports me.hugmanrique.cartage.compression;
+  exports me.hugmanrique.cartage.gb;
+  exports me.hugmanrique.cartage.gba;
   requires transitive jdk.incubator.foreign;
   requires org.checkerframework.checker.qual;
 }

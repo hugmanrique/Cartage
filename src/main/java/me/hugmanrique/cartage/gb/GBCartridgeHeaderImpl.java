@@ -69,8 +69,8 @@ final class GBCartridgeHeaderImpl implements GBCartridge.Header {
   }
 
   /**
-   * Returns whether the given Z80 operation code represents a {@code JP} or
-   * {@code CALL} instruction.
+   * Returns whether the given Z80 operation code represents a {@code JP} or {@code CALL}
+   * instruction.
    *
    * @param opcode the Z80 opcode
    * @return {@code true} if {@code opcode} represents a {@code JP} or {@code CALL} instruction
@@ -87,7 +87,7 @@ final class GBCartridgeHeaderImpl implements GBCartridge.Header {
   @Override
   public short entryPoint() {
     // The entry point is 4 bytes and must contain a JP or CALL instruction (which take 3 bytes).
-    // Thus, the opcode of this instruction is at byte 0 or 1.
+    // Thus, the opcode of the instruction is at byte 0 or 1.
     int offset = ENTRY_POINT_ADDR;
     do {
       int opcode = this.cartridge.getUnsignedByte(offset);

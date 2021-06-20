@@ -5,16 +5,15 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-package me.hugmanrique.cartage.compression;
+package me.hugmanrique.cartage.tests.compression;
 
-import static me.hugmanrique.cartage.DummyCartridge.fromData;
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static me.hugmanrique.cartage.tests.DummyCartridge.fromData;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.nio.ByteOrder;
-import me.hugmanrique.cartage.Cartridge;
+import me.hugmanrique.cartage.compression.DecompressionException;
+import me.hugmanrique.cartage.compression.GBARLDecompressor;
 import org.junit.jupiter.api.Test;
 
 /**

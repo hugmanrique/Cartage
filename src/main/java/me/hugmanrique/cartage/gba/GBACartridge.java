@@ -211,15 +211,15 @@ public interface GBACartridge extends Cartridge {
   }
 
   /**
-   * The header of a Game Boy Advance cartridge.
-   * Changes to the header are reflected in the cartridge, and vice-versa.
+   * The header of a Game Boy Advance cartridge. Changes to the header are reflected in the
+   * cartridge, and vice-versa.
    */
   interface Header {
     // ARM7TDMI reference https://developer.arm.com/documentation/ddi0210/c/
 
     /**
-     * The address at which a {@code B} instruction branching to the start address of
-     * the cartridge is written.
+     * The address at which a {@code B} instruction branching to the start address of the cartridge
+     * is written.
      */
     int ENTRY_INSTRUCTION_ADDR = 0x8000000;
 
@@ -227,22 +227,22 @@ public interface GBACartridge extends Cartridge {
      * Returns the address to which the console's boot procedure jumps after initialization.
      *
      * @return the entry point address, in bytes
-     * @throws IllegalStateException if the entry point instruction is not a {@code B} instruction
+     * @throws IllegalStateException if the entry point instruction is not a {@code B}
+     *     instruction
      */
     int entryPoint();
 
     /**
-     * Sets the entry point address.
-     * This writes a {@code B} instruction at {@link #ENTRY_INSTRUCTION_ADDR} with
-     * a relative word offset to the given address.
+     * Sets the entry point address. This writes a {@code B} instruction at {@link
+     * #ENTRY_INSTRUCTION_ADDR} with a relative word offset to the given address.
      *
      * <p>The ARM7TDMI branch instruction contain a signed 24-bit word offset. Therefore,
      * the minimum and maximum entry point addresses are {@code 0x6000004} and {@code 0x9FFFFFC}
      * respectively.
      *
      * @param address the entry point address, in bytes
-     * @throws IllegalArgumentException if the given address is out of bounds, or
-     *         is not word aligned, i.e. a multiple of 4
+     * @throws IllegalArgumentException if the given address is out of bounds, or is not word
+     *     aligned, i.e. a multiple of 4
      */
     void setEntryPoint(final int address);
 
@@ -265,8 +265,8 @@ public interface GBACartridge extends Cartridge {
      * Returns the Nintendo logo bitmap.
      *
      * <p>If incorrect, the console's boot procedure locks up in an infinite loop.
-     * The only exception are bits 2 and 7 of the 152-th byte ({@code 0x98}).
-     * When both bits are set, the console's debugging mode is enabled.
+     * The only exception are bits 2 and 7 of the 152-th byte ({@code 0x98}). When both bits are
+     * set, the console's debugging mode is enabled.
      *
      * @return a copy of the logo
      */
@@ -276,7 +276,8 @@ public interface GBACartridge extends Cartridge {
      * Copies the Nintendo logo into the given array.
      *
      * @param dest the destination array
-     * @throws IllegalArgumentException if the length of {@code dest} is not {@link #LOGO_LENGTH}
+     * @throws IllegalArgumentException if the length of {@code dest} is not {@link
+     *     #LOGO_LENGTH}
      * @see #logo() for details on verification
      */
     void logo(final byte[] dest);
@@ -285,7 +286,8 @@ public interface GBACartridge extends Cartridge {
      * Sets the Nintendo logo bitmap.
      *
      * @param source the logo
-     * @throws IllegalArgumentException if the length of {@code source} is not {@link #LOGO_LENGTH}
+     * @throws IllegalArgumentException if the length of {@code source} is not {@link
+     *     #LOGO_LENGTH}
      * @see #logo() for details on verification
      */
     void setLogo(final byte[] source);
@@ -309,7 +311,7 @@ public interface GBACartridge extends Cartridge {
      *
      * @param title the game title
      * @throws IllegalArgumentException if the value has a length greater than 12, or contains
-     *         non-ASCII or non-uppercase characters
+     *     non-ASCII or non-uppercase characters
      */
     void setTitle(final String title);
 
@@ -329,8 +331,8 @@ public interface GBACartridge extends Cartridge {
      * Sets the UTTD code.
      *
      * @param code the UTTD code
-     * @throws IllegalArgumentException if the value has a length different from 4, or
-     *         is invalid
+     * @throws IllegalArgumentException if the value has a length different from 4, or is
+     *     invalid
      */
     void setCode(final String code);
 
@@ -359,8 +361,8 @@ public interface GBACartridge extends Cartridge {
      * Sets the short game title.
      *
      * @param value the short game title
-     * @throws IllegalArgumentException if the value as a length different from 2, or
-     *         contains non-ASCII or non-uppercase characters
+     * @throws IllegalArgumentException if the value as a length different from 2, or contains
+     *     non-ASCII or non-uppercase characters
      */
     void setShortTitle(final String value);
 
@@ -423,16 +425,16 @@ public interface GBACartridge extends Cartridge {
     void setVersion(final byte version);
 
     /**
-     * Returns the checksum of some header data.
-     * If incorrect, the console's boot procedure locks up in an infinite loop.
+     * Returns the checksum of some header data. If incorrect, the console's boot procedure locks up
+     * in an infinite loop.
      *
      * @return the header checksum
      */
     byte checksum();
 
     /**
-     * Computes the checksum of some header data (as returned by {@link #checksum()}) from
-     * the current header contents.
+     * Computes the checksum of some header data (as returned by {@link #checksum()}) from the
+     * current header contents.
      *
      * @return the computed header checksum
      */

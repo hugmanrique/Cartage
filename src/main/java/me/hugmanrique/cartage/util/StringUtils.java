@@ -24,7 +24,7 @@ public final class StringUtils {
   public static void requireLength(final CharSequence sequence, final int length) {
     if (sequence.length() != length) {
       throw new IllegalArgumentException("Expected string length to be " + length
-        + ", got" + sequence.length() + " instead (" + sequence + ")");
+          + ", got" + sequence.length() + " instead (" + sequence + ")");
     }
   }
 
@@ -33,34 +33,36 @@ public final class StringUtils {
    *
    * @param sequence the sequence to check
    * @param maxLength the maximum length allowed
-   * @throws IllegalArgumentException if the length of the sequence is greater than
-   *         {@code maxLength}
+   * @throws IllegalArgumentException if the length of the sequence is greater than {@code
+   *     maxLength}
    */
   public static void requireMaxLength(final CharSequence sequence, final int maxLength) {
     if (sequence.length() > maxLength) {
       throw new IllegalArgumentException("Expected string length to be less than " + maxLength
-        + ", got " + sequence.length() + " instead (" + sequence + ")");
+          + ", got " + sequence.length() + " instead (" + sequence + ")");
     }
   }
 
   /**
-   * Ensures the given string is composed of uppercase ASCII characters, spaces, and
-   * null terminators ({@code \0}).
+   * Ensures the given string is composed of uppercase ASCII characters, spaces, and null
+   * terminators ({@code \0}).
    *
    * @param string the string to check
-   * @throws IllegalArgumentException if the string contains non-ASCII or non-uppercase characters
+   * @throws IllegalArgumentException if the string contains non-ASCII or non-uppercase
+   *     characters
    */
   public static void requireUppercaseAscii(final String string) {
     requireUppercaseAscii(string, true);
   }
 
   /**
-   * Ensures the given string is composed of uppercase ASCII characters and spaces, ignoring
-   * null terminators ({@code \0}) if specified.
+   * Ensures the given string is composed of uppercase ASCII characters and spaces, ignoring null
+   * terminators ({@code \0}) if specified.
    *
    * @param string the string to check
    * @param acceptNullTerminators whether to ignore null terminators
-   * @throws IllegalArgumentException if the string contains non-ASCII or non-uppercase characters
+   * @throws IllegalArgumentException if the string contains non-ASCII or non-uppercase
+   *     characters
    */
   public static void requireUppercaseAscii(final String string,
                                            final boolean acceptNullTerminators) {
@@ -77,8 +79,8 @@ public final class StringUtils {
   }
 
   /**
-   * Returns a string of the given length, consisting of {@code string} followed by as
-   * many instances of {@code padChar} as necessary to reach that length.
+   * Returns a string of the given length, consisting of {@code string} followed by as many
+   * instances of {@code padChar} as necessary to reach that length.
    *
    * @param string the string to pad
    * @param length the length of the returned string
@@ -91,7 +93,7 @@ public final class StringUtils {
     final int originalLength = string.length();
     if (originalLength > length) {
       throw new IllegalArgumentException(
-        "Cannot pad string with length greater than padded length");
+          "Cannot pad string with length greater than padded length");
     }
     return string + String.valueOf(padChar).repeat(length - originalLength);
   }

@@ -19,15 +19,15 @@ import me.hugmanrique.cartage.Cartridge;
 public interface Decompressor {
 
   /**
-   * Decompresses data starting at the given offset from the given cartridge.
-   * The offset of the cartridge is not modified.
+   * Decompresses data starting at the given offset from the given cartridge. The offset of the
+   * cartridge is not modified.
    *
    * @param cartridge the cartridge
    * @param offset the offset where compressed data starts
    * @return the decompressed data
    * @throws DecompressionException if an error occurs while attempting decompression
    * @throws IllegalArgumentException if the given offset is out of bounds, i.e. less than 0 or
-   *         greater than or equal to {@linkplain Cartridge#size() {@code cartridge.size()}}
+   *     greater than or equal to {@linkplain Cartridge#size() {@code cartridge.size()}}
    */
   default byte[] decompress(final Cartridge cartridge, final long offset)
       throws DecompressionException {

@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-package me.hugmanrique.cartage.gb;
+package me.hugmanrique.cartage.tests.gb;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -16,8 +16,9 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
 import java.nio.file.Path;
-import me.hugmanrique.cartage.CartridgeTestSuite;
-import me.hugmanrique.cartage.TestUtils;
+import me.hugmanrique.cartage.gb.GBCartridge;
+import me.hugmanrique.cartage.tests.CartridgeTestSuite;
+import me.hugmanrique.cartage.tests.TestUtils;
 import org.junit.jupiter.api.Test;
 
 /**

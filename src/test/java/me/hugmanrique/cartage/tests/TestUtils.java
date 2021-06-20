@@ -5,7 +5,7 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-package me.hugmanrique.cartage;
+package me.hugmanrique.cartage.tests;
 
 import java.nio.file.Files;
 import java.nio.file.Path;

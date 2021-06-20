@@ -102,7 +102,7 @@ public abstract class AbstractCartridge implements Cartridge {
 
   @Override
   public int getUnsignedByte(final long offset) {
-    return Byte.toUnsignedInt(this.getByte(this.offset));
+    return Byte.toUnsignedInt(this.getByte(offset));
   }
 
   @Override
@@ -380,7 +380,7 @@ public abstract class AbstractCartridge implements Cartridge {
   public void copyTo(final Path path) throws IOException {
     requireNonNull(path);
     try (var dest =
-           MemorySegment.mapFile(path, 0, this.size(), FileChannel.MapMode.READ_WRITE)) {
+             MemorySegment.mapFile(path, 0, this.size(), FileChannel.MapMode.READ_WRITE)) {
       dest.copyFrom(this.segment);
     }
   }
@@ -395,9 +395,9 @@ public abstract class AbstractCartridge implements Cartridge {
   @Override
   public String toString() {
     return "AbstractCartridge{"
-      + "segment=" + segment
-      + ", order=" + order
-      + ", offset=" + offset
-      + '}';
+        + "segment=" + segment
+        + ", order=" + order
+        + ", offset=" + offset
+        + '}';
   }
 }

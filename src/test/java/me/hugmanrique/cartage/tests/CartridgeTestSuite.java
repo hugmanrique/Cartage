@@ -5,12 +5,13 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-package me.hugmanrique.cartage;
+package me.hugmanrique.cartage.tests;
 
 import static java.util.Objects.requireNonNull;
 
 import java.nio.ByteBuffer;
 import jdk.incubator.foreign.MemorySegment;
+import me.hugmanrique.cartage.Cartridge;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.TestInstance;

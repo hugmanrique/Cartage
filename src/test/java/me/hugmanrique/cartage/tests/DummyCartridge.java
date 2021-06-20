@@ -5,12 +5,14 @@
  * LICENSE file in the root directory of this source tree.
  */
 
-package me.hugmanrique.cartage;
+package me.hugmanrique.cartage.tests;
 
 import static java.util.Objects.requireNonNull;
 
 import java.nio.ByteOrder;
 import jdk.incubator.foreign.MemorySegment;
+import me.hugmanrique.cartage.AbstractCartridge;
+import me.hugmanrique.cartage.Cartridge;
 
 /**
  * A {@link Cartridge} with no special functionality.

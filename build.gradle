@@ -20,6 +20,11 @@ java {
   }
 }
 
+compileJava {
+  // https://github.com/google/error-prone/issues/1647
+  options.errorprone.disable('UnnecessaryParentheses')
+}
+
 license {
   header = file('HEADER.txt')
 }
@@ -29,7 +34,7 @@ repositories {
 }
 
 dependencies {
-  compileOnlyApi 'org.checkerframework:checker-qual:3.15.0'
+  api 'org.checkerframework:checker-qual:3.15.0'
   errorprone 'com.google.errorprone:error_prone_core:2.7.1'
   testImplementation "org.junit.jupiter:junit-jupiter-api:${junitVersion}"
   testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:${junitVersion}"
