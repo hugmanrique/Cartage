@@ -56,7 +56,7 @@ public class GBARLDecompressorTests {
   void testLiteralRun() {
     final var compressed = new byte[] {
         0x30, 0, 0, 5, // header
-        5, (byte) 0xF0, 0x0, (byte) 0xBA, 0x12, 0x34 // literal run of 5 bytes
+        4, (byte) 0xF0, 0x0, (byte) 0xBA, 0x12, 0x34 // literal run of 5 bytes
       };
     final var cartridge = fromData(compressed, ByteOrder.BIG_ENDIAN);
     final byte[] result = DECOMPRESSOR.decompress(cartridge);
@@ -74,7 +74,7 @@ public class GBARLDecompressorTests {
   void testLiteralRunTooShortThrows() {
     final var compressed = new byte[] {
         0x30, 0, 0, 4,
-        4, 1, 2, 3 // only 3 bytes, expected 4
+        3, 1, 2, 3 // only 3 bytes, expected 4
       };
 
     assertThrows(DecompressionException.class, () ->

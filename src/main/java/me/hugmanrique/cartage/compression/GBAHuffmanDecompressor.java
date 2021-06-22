@@ -60,7 +60,7 @@ public final class GBAHuffmanDecompressor implements Decompressor {
       final long pathsOffset = rootNodeOffset + treeLength;
 
       int index = 0;
-      byte currentCount = 0; // number of bits written to result[index]
+      int currentCount = 0; // number of bits written to result[index]
       while (index < length) {
         final int paths = cartridge.getInt(pathsOffset + index);
 
