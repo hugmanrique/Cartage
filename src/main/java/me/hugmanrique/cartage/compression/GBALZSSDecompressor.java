@@ -37,6 +37,7 @@ public final class GBALZSSDecompressor implements Decompressor {
   private static final int DISP_MSB = 0x0F;
 
   @Override
+  @SuppressWarnings("NarrowingCompoundAssignment") // flags <<= 1 is harmless
   public byte[] decompress(final Cartridge cartridge) throws DecompressionException {
     try {
       final int header = cartridge.readInt();
