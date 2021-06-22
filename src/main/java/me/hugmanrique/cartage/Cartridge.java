@@ -63,7 +63,7 @@ public interface Cartridge extends CartridgeAccessors, AutoCloseable {
    *
    * @param offset the new offset, in bytes
    * @throws IndexOutOfBoundsException if the given offset is out of bounds, i.e. less than 0 or
-   *     greater than or equal to {@link #size()}
+   *     greater than {@link #size()}
    * @throws IllegalStateException if the cartridge is closed
    */
   void setOffset(final long offset);
@@ -74,7 +74,7 @@ public interface Cartridge extends CartridgeAccessors, AutoCloseable {
    * @return the cartridge size, in bytes
    * @throws IllegalStateException if the cartridge is closed
    */
-  long size(); // TODO document immutable
+  long size();
 
   /**
    * Returns the number of bytes between the current offset and the end of the cartridge.

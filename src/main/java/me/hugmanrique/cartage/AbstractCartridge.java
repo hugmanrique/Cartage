@@ -57,7 +57,8 @@ public abstract class AbstractCartridge implements Cartridge {
 
   @Override
   public void setOffset(final long offset) {
-    this.offset = Objects.checkIndex(offset, this.size());
+    // TODO Better exception messages, this is a quick hack
+    this.offset = Objects.checkIndex(offset, this.size() + 1);
   }
 
   @Override

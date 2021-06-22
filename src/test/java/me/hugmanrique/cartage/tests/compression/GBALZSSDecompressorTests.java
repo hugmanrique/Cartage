@@ -24,7 +24,7 @@ public class GBALZSSDecompressorTests {
   private static final GBALZSSDecompressor DECOMPRESSOR = GBALZSSDecompressor.get();
 
   @Test
-  void testInvalidHeader() {
+  void testInvalidType() {
     final var cartridge = fromData(new byte[3], ByteOrder.LITTLE_ENDIAN);
 
     assertThrows(DecompressionException.class, () -> DECOMPRESSOR.decompress(cartridge));

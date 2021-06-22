@@ -16,7 +16,7 @@ public final class GBACompression {
 
   static void checkCompressionType(final int header, final byte expectedType, final String typeName)
       throws DecompressionException {
-    final int actual = (header >>> 24) & 0xFF;
+    final int actual = header >>> 28;
     if (actual != expectedType) {
       throw new DecompressionException("Expected " + expectedType + " type for "
           + typeName + "-compressed data, got " + actual + " instead");

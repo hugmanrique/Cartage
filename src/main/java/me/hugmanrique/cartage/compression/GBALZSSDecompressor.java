@@ -29,7 +29,7 @@ public final class GBALZSSDecompressor implements Decompressor {
     return INSTANCE;
   }
 
-  private static final byte MAGIC_NUMBER = 0x10;
+  private static final byte TYPE = 1;
   private static final int DECOMPRESSED_LENGTH = 0xFFFFFF;
   private static final int BLOCK_COUNT = 8;
   private static final int COMPRESSED = 0x80;
@@ -41,7 +41,7 @@ public final class GBALZSSDecompressor implements Decompressor {
   public byte[] decompress(final Cartridge cartridge) throws DecompressionException {
     try {
       final int header = cartridge.readInt();
-      checkCompressionType(header, MAGIC_NUMBER, "LZSS");
+      checkCompressionType(header, TYPE, "LZSS");
 
       final int length = header & DECOMPRESSED_LENGTH;
       final byte[] result = new byte[length];
