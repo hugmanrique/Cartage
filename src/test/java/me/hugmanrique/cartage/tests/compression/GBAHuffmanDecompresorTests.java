@@ -1,3 +1,10 @@
+/*
+ * Copyright (c) 2021 Hugo Manrique.
+ *
+ * This work is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
 package me.hugmanrique.cartage.tests.compression;
 
 import static me.hugmanrique.cartage.tests.DummyCartridge.fromData;
@@ -25,7 +32,7 @@ public class GBAHuffmanDecompresorTests {
 
   @Test
   void testBitDepthMustBePowerOf2() {
-    final var header = new byte[] { 0x23, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0 };
+    final var header = new byte[] { 0x23, 0, 0, 0, 0, 0, 0 };
     final var cartridge = fromData(header, ByteOrder.BIG_ENDIAN);
 
     assertThrows(DecompressionException.class, () -> DECOMPRESSOR.decompress(cartridge));
@@ -33,7 +40,7 @@ public class GBAHuffmanDecompresorTests {
 
   @Test
   void testEmpty() {
-    final var header = new byte[] { 0x20, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0 };
+    final var header = new byte[] { 0x20, 0, 0, 0, 0, 0, 0 };
     final var cartridge = fromData(header, ByteOrder.BIG_ENDIAN);
     final byte[] result = DECOMPRESSOR.decompress(cartridge);
 

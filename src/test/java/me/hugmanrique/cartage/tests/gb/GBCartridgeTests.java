@@ -187,7 +187,7 @@ public class GBCartridgeTests extends CartridgeTestSuite<GBCartridge> {
 
   @Test
   void testRamSize() {
-    assertEquals(0x0, header.ramSize());
+    assertEquals(0, header.ramSize());
     assertEquals(0, header.ramSizeBytes());
     header.setRamSize((byte) 0x3);
     assertEquals((byte) 0x3, header.ramSize());

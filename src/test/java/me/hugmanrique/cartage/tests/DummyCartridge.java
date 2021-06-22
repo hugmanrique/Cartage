@@ -20,16 +20,28 @@ import me.hugmanrique.cartage.Cartridge;
 public class DummyCartridge extends AbstractCartridge {
 
   /**
-   * Constructs a {@link DummyCartridge}.
+   * Constructs a {@link DummyCartridge} from a memory segment.
    *
    * @param data the cartridge data
    * @param order the cartridge's byte order
+   * @return a cartridge
    */
-  public static DummyCartridge fromData(final byte[] data, final ByteOrder order) {
+  public static DummyCartridge fromData(final MemorySegment data, final ByteOrder order) {
     return new DummyCartridge(requireNonNull(data), requireNonNull(order));
   }
 
-  private DummyCartridge(final byte[] data, final ByteOrder order) {
-    super(MemorySegment.ofArray(data), order);
+  /**
+   * Constructs a {@link DummyCartridge} from a byte array.
+   *
+   * @param data the cartridge data
+   * @param order the cartridge's byte order
+   * @return a cartridge
+   */
+  public static DummyCartridge fromData(final byte[] data, final ByteOrder order) {
+    return new DummyCartridge(MemorySegment.ofArray(requireNonNull(data)), requireNonNull(order));
+  }
+
+  private DummyCartridge(final MemorySegment segment, final ByteOrder order) {
+    super(segment, order);
   }
 }

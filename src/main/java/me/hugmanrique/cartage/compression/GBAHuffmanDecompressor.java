@@ -31,7 +31,7 @@ public final class GBAHuffmanDecompressor implements Decompressor {
   }
 
   private static final byte TYPE = 2;
-  private static final int BIT_DEPTH = 0xF;
+  private static final int BIT_DEPTH = 24;
   private static final int DECOMPRESSED_LENGTH = 0xFFFFFF;
   private static final int CHILD_IS_LEAF = 0x80;
   private static final int CHILD_OFFSET = 0x3F;
@@ -52,7 +52,7 @@ public final class GBAHuffmanDecompressor implements Decompressor {
       // when a leaf node is reached, which contains an uncompressed value of
       // bitDepth bits (usually 4 or 8).
 
-      final int bitDepth = (header >>> 24) & BIT_DEPTH;
+      final int bitDepth = (header >>> BIT_DEPTH) & 0xF;
       if (!NumberUtils.isPowerOf2(bitDepth)) {
         throw new DecompressionException("Bit depth must be a power of 2, got " + bitDepth);
       }

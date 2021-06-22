@@ -33,7 +33,7 @@ public class GBALZSSDecompressorTests {
 
   @Test
   void testEmpty() {
-    final var header = new byte[] { 0x10, 0x0, 0x0, 0x0 };
+    final var header = new byte[] { 0x10, 0, 0, 0 };
     final var cartridge = fromData(header, ByteOrder.BIG_ENDIAN);
     final byte[] result = DECOMPRESSOR.decompress(cartridge);
 
