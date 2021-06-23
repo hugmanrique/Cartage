@@ -30,7 +30,8 @@ public final class GBALZSSDecompressor implements Decompressor {
     return INSTANCE;
   }
 
-  private static final byte TYPE = 1;
+  static final byte TYPE = 1;
+  static final int EXTENDED = 1 << 31; // compressed with LZX
   private static final int DECOMPRESSED_LENGTH = 0xFFFFFF;
   private static final int BLOCK_COUNT = 8;
   private static final int COMPRESSED = 0x80;
@@ -43,6 +44,9 @@ public final class GBALZSSDecompressor implements Decompressor {
     try {
       final int header = cartridge.readInt();
       checkCompressionType(header, TYPE, "LZSS");
+      if ((header & EXTENDED) != 0) {
+        throw new DecompressionException("Got LZX-compressed data");
+      }
 
       final int length = header & DECOMPRESSED_LENGTH;
       final byte[] result = new byte[length];

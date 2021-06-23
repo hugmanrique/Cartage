@@ -12,7 +12,7 @@ package me.hugmanrique.cartage.compression;
  *
  * @see <a href="https://problemkaputt.de/gbatek.htm#biosdecompressionfunctions">GBATEK</a>
  */
-public final class GBACompression {
+final class GBACompression {
 
   static void checkCompressionType(final int header, final byte expectedType, final String typeName)
       throws DecompressionException {

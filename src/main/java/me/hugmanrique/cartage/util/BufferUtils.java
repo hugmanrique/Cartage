@@ -1,3 +1,10 @@
+/*
+ * Copyright (c) 2021 Hugo Manrique.
+ *
+ * This work is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
 package me.hugmanrique.cartage.util;
 
 /**
@@ -6,10 +13,10 @@ package me.hugmanrique.cartage.util;
 public final class BufferUtils {
 
   /**
-   * Copies the contents from the specified array, beginning at the specified position,
-   * byte-by-byte, to the specified position of the array. The source and destination areas may
-   * overlap: a copy operation observes the results of past operations (unlike {@link
-   * System#arraycopy(Object, int, Object, int, int)}).
+   * Copies the contents from the specified array byte-by-byte, beginning at the specified position,
+   * to the specified position of the array. The source and destination areas may overlap: a copy
+   * operation observes the results of past copy operations (unlike {@link System#arraycopy(Object,
+   * int, Object, int, int)}).
    *
    * @param arr the source and destination array
    * @param srcPos the starting source position in the array

@@ -1,3 +1,10 @@
+/*
+ * Copyright (c) 2021 Hugo Manrique.
+ *
+ * This work is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
 package me.hugmanrique.cartage.compression;
 
 import static me.hugmanrique.cartage.compression.GBACompression.checkCompressionType;
@@ -8,7 +15,7 @@ import me.hugmanrique.cartage.util.BufferUtils;
 // TODO Document this is the big-endian version
 
 /**
- * Implements the LZX decompression algorithm, used in some Nintendo DS games.
+ * Implements the LZX decompression algorithm in big-endian mode, used in some Nintendo DS games.
  *
  * @see <a href="https://gbatemp.net/threads/nintendo-ds-gba-compressors.313278/">CUE Nintendo
  *     DS/GBA compressors</a>
@@ -26,7 +33,8 @@ public final class GBALZXDecompressor implements Decompressor {
     return INSTANCE;
   }
 
-  private static final byte TYPE = 1; // TODO Check first byte is 11 (to diff between LZSS)
+  private static final byte TYPE = GBALZSSDecompressor.TYPE;
+  private static final int EXTENDED = GBALZSSDecompressor.EXTENDED;
   private static final int DECOMPRESSED_LENGTH = 0xFFFFFF;
   private static final int BLOCK_COUNT = 8;
   private static final int COMPRESSED = 0x80;
@@ -42,6 +50,9 @@ public final class GBALZXDecompressor implements Decompressor {
     try {
       final int header = cartridge.readInt();
       checkCompressionType(header, TYPE, "LZX");
+      if ((header & EXTENDED) == 0) {
+        throw new DecompressionException("Got non-extended LZSS-compressed data");
+      }
 
       final int length = header & DECOMPRESSED_LENGTH;
       final byte[] result = new byte[length];
@@ -51,7 +62,7 @@ public final class GBALZXDecompressor implements Decompressor {
         // The compressed data is divided in groups of 8 blocks. A flag byte indicates the type of
         // each block, where a 0 bit specifies the block data byte should be copied verbatim; and
         // a 1 bit indicates the block is compressed, in which case the data bytes contain
-        // a variable-length number of bytes to copy and a displacement within the result array.
+        // a displacement and the number of bytes to copy within the result array.
         byte flags = cartridge.readByte();
         for (int i = 0; i < BLOCK_COUNT; i++) {
           boolean compressed = (flags & COMPRESSED) != 0;
