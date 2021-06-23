@@ -95,7 +95,7 @@ public final class GBAHuffmanDecompressor implements Decompressor {
       cartridge.setOffset(pathsOffset + length); // end of sequence of paths
       return result;
     } catch (final IndexOutOfBoundsException e) {
-      throw new DecompressionException("Got corrupted Huffman-compressed data");
+      throw new DecompressionException("Got corrupted Huffman-compressed data", e);
     }
   }
 }

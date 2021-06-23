@@ -56,7 +56,7 @@ public final class GBADiffUnfilterer implements Decompressor {
       }
       return result;
     } catch (final IndexOutOfBoundsException e) {
-      throw new DecompressionException("Got corrupted DiffUnfilter data");
+      throw new DecompressionException("Got corrupted DiffUnfilter data", e);
     }
   }
 
