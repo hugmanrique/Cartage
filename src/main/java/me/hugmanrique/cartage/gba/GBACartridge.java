@@ -14,6 +14,7 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import me.hugmanrique.cartage.Cartridge;
+import me.hugmanrique.cartage.compression.Decompressor;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**

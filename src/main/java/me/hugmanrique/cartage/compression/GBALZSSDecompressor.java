@@ -10,6 +10,7 @@ package me.hugmanrique.cartage.compression;
 import static me.hugmanrique.cartage.compression.GBACompression.checkCompressionType;
 
 import me.hugmanrique.cartage.Cartridge;
+import me.hugmanrique.cartage.util.BufferUtils;
 
 /**
  * Implements the LZ77UnCompRead algorithm, present in the BIOS of the GBA and Nintendo DS.
@@ -34,7 +35,7 @@ public final class GBALZSSDecompressor implements Decompressor {
   private static final int BLOCK_COUNT = 8;
   private static final int COMPRESSED = 0x80;
   private static final int DISP_BASELINE = 1;
-  private static final int DISP_MSB = 0x0F;
+  private static final int DISP_MSB = 0xF;
 
   @Override
   @SuppressWarnings("NarrowingCompoundAssignment") // flags <<= 1 is harmless
@@ -57,22 +58,22 @@ public final class GBALZSSDecompressor implements Decompressor {
           boolean compressed = (flags & COMPRESSED) != 0;
           if (compressed) {
             // Copy count bytes starting at offset (index - displacement) of result into
-            // result starting at offset index. The length and displacement values are
+            // result starting at offset index. The count and displacement values are
             // contained in the next 2 bytes. Their layout is a bit unnatural.
             // Some Pokémon Ruby/Sapphire tilesets have an invalid count value, i.e.
             // greater than the remaining number of bytes; set this upper bound.
-            final int meta = cartridge.readByte();
-            final int count = Math.min((meta >>> 4) + 3, length - index);
+            final int data = cartridge.readByte();
+            final int count = Math.min((data >>> 4) + 3, length - index);
             final int displacement = DISP_BASELINE
-                + (((meta & DISP_MSB) << 8) // the most-significant 4 bits
+                + (((data & DISP_MSB) << 8) // the most-significant 4 bits
                     | cartridge.readByte()); // the least-significant 8 bits
 
             final int srcPos = index - displacement;
             if (srcPos < 0) {
               throw new DecompressionException("Invalid displacement " + displacement
-                  + " at index " + index);
+                  + " at offset " + cartridge.offset());
             }
-            System.arraycopy(result, srcPos, result, index, count);
+            BufferUtils.copyByteByByte(result, srcPos, index, count);
             index += count;
           } else {
             result[index++] = cartridge.readByte();
