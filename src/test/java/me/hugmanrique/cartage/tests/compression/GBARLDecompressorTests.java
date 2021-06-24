@@ -24,7 +24,7 @@ public class GBARLDecompressorTests {
   private static final GBARLDecompressor DECOMPRESSOR = GBARLDecompressor.get();
 
   @Test
-  void testInvalidHeader() {
+  void testInvalidHeaderThrows() {
     var cartridge = fromData(new byte[3], ByteOrder.LITTLE_ENDIAN);
 
     assertThrows(DecompressionException.class, () -> DECOMPRESSOR.decompress(cartridge));
@@ -71,7 +71,7 @@ public class GBARLDecompressorTests {
   }
 
   @Test
-  void testLiteralRunTooShortThrows() {
+  void testTooShortLiteralRunThrows() {
     final var compressed = new byte[] {
         0x30, 0, 0, 4,
         3, 1, 2, 3 // only 3 bytes, expected 4

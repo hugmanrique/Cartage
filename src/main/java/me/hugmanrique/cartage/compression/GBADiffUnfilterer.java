@@ -7,7 +7,7 @@
 
 package me.hugmanrique.cartage.compression;
 
-import static me.hugmanrique.cartage.compression.GBACompression.checkCompressionType;
+import static me.hugmanrique.cartage.compression.GBACompression.requireTypeNibble;
 
 import me.hugmanrique.cartage.Cartridge;
 
@@ -31,8 +31,8 @@ public final class GBADiffUnfilterer implements Decompressor {
   }
 
   private static final byte TYPE = 8;
-  private static final int DATA_SIZE = 24;
-  private static final int DECOMPRESSED_LENGTH = 0xFFFFFF;
+  private static final int DATA_SIZE = 0xF;
+  private static final int DECOMPRESSED_LENGTH = 8;
   private static final int BYTE_DELTAS = 1;
   private static final int SHORT_DELTAS = 2;
 
@@ -42,10 +42,10 @@ public final class GBADiffUnfilterer implements Decompressor {
   public byte[] decompress(final Cartridge cartridge) throws DecompressionException {
     try {
       final int header = cartridge.readInt();
-      checkCompressionType(header, TYPE, "UnFilter");
+      requireTypeNibble(header, TYPE, "UnFilter");
 
-      int dataSize = (header >>> DATA_SIZE) & 0xF;
-      final int length = header & DECOMPRESSED_LENGTH;
+      int dataSize = header & DATA_SIZE;
+      final int length = header >>> DECOMPRESSED_LENGTH;
       final byte[] result = new byte[length];
 
       switch (dataSize) {

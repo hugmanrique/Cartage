@@ -92,6 +92,17 @@ public interface Cartridge extends CartridgeAccessors, AutoCloseable {
    */
   boolean hasRemaining();
 
+  // TODO Re-add? Is this useful?
+  /*
+   * Returns whether there exist at least {@code count} bytes between the current offset and the end
+   * of the cartridge.
+   *
+   * @param count the number of bytes that should be available
+   * @return {@code true} if and only if {@link #remaining() >= count}
+   * @throws IllegalStateException if the cartridge is closed
+   *
+  boolean canRead(final int count);*/
+
   /**
    * Increases the cartridge's offset.
    *

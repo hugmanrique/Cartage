@@ -7,7 +7,6 @@ hs_err_pid*
 bin/
 build/
 !gradle-wrapper.jar
-gradle.properties
 
 # IntelliJ
 .idea/

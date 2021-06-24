@@ -19,7 +19,7 @@ public final class NumberUtils {
    * Returns whether the given value is a power of 2.
    *
    * @param value the value to check
-   * @return true if the value is a power of 2; false otherwise
+   * @return {@code true} if the value is a power of 2; {@code false} otherwise
    */
   public static boolean isPowerOf2(final int value) {
     // For example, 0b100 & 0b011 == 0

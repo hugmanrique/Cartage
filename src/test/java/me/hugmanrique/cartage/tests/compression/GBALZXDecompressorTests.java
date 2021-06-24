@@ -17,15 +17,16 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import java.io.IOException;
 import java.nio.ByteOrder;
 import me.hugmanrique.cartage.compression.DecompressionException;
-import me.hugmanrique.cartage.compression.GBALZSSDecompressor;
+import me.hugmanrique.cartage.compression.GBALZXDecompressor;
+import me.hugmanrique.cartage.tests.TestUtils;
 import org.junit.jupiter.api.Test;
 
 /**
- * Tests {@link GBALZSSDecompressor}.
+ * Tests {@link GBALZXDecompressor}.
  */
-public class GBALZSSDecompressorTests {
+public class GBALZXDecompressorTests {
 
-  private static final GBALZSSDecompressor DECOMPRESSOR = GBALZSSDecompressor.get();
+  private static final GBALZXDecompressor DECOMPRESSOR = GBALZXDecompressor.get();
 
   @Test
   void testInvalidTypeThrows() {
@@ -35,8 +36,8 @@ public class GBALZSSDecompressorTests {
   }
 
   @Test
-  void testExtendedLZThrows() {
-    final var header = new byte[] { 0x11, 0, 0, 0 };
+  void testRegularLZThrows() {
+    final var header = new byte[] { 0x10, 0, 0, 0 };
     final var cartridge = fromData(header, ByteOrder.LITTLE_ENDIAN);
 
     assertThrows(DecompressionException.class, () -> DECOMPRESSOR.decompress(cartridge));
@@ -44,7 +45,7 @@ public class GBALZSSDecompressorTests {
 
   @Test
   void testEmpty() {
-    final var header = new byte[] { 0x10, 0, 0, 0 };
+    final var header = new byte[] { 0x11, 0, 0, 0 };
     final var cartridge = fromData(header, ByteOrder.LITTLE_ENDIAN);
     final byte[] result = DECOMPRESSOR.decompress(cartridge);
 
@@ -54,7 +55,7 @@ public class GBALZSSDecompressorTests {
 
   @Test
   void testEmptyFromOffset() {
-    final var data = new byte[] { 0x25, 0x34, 0x10, 0, 0, 0 };
+    final var data = new byte[] { 0x25, 0x34, 0x11, 0, 0, 0 };
     final var cartridge = fromData(data, ByteOrder.LITTLE_ENDIAN);
     final byte[] result = DECOMPRESSOR.decompress(cartridge, 2);
 
@@ -65,7 +66,7 @@ public class GBALZSSDecompressorTests {
   @Test
   void testPrimes() throws IOException {
     final var cartridge = fromData(
-        getResourceBytes("primes_lzss"), ByteOrder.LITTLE_ENDIAN);
+        getResourceBytes("primes_lzx"), ByteOrder.LITTLE_ENDIAN);
     final byte[] result = DECOMPRESSOR.decompress(cartridge);
 
     assertArrayEquals(getPrimes(), result);

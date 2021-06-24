@@ -7,7 +7,7 @@
 
 package me.hugmanrique.cartage.compression;
 
-import static me.hugmanrique.cartage.compression.GBACompression.checkCompressionType;
+import static me.hugmanrique.cartage.compression.GBACompression.requireTypeByte;
 
 import me.hugmanrique.cartage.Cartridge;
 
@@ -29,8 +29,8 @@ public final class GBARLDecompressor implements Decompressor {
     return INSTANCE;
   }
 
-  private static final byte TYPE = 3;
-  private static final int DECOMPRESSED_LENGTH = 0xFFFFFF;
+  private static final byte TYPE = 0x30;
+  private static final int DECOMPRESSED_LENGTH = 8;
   private static final byte REPEAT_RUN = (byte) 0x80;
   private static final byte RUN_LENGTH = ~REPEAT_RUN;
   private static final int REPEAT_BASELINE = 3;
@@ -42,9 +42,9 @@ public final class GBARLDecompressor implements Decompressor {
   public byte[] decompress(final Cartridge cartridge) throws DecompressionException {
     try {
       final int header = cartridge.readInt();
-      checkCompressionType(header, TYPE, "RL");
+      requireTypeByte(header, TYPE, "RL");
 
-      final int length = header & DECOMPRESSED_LENGTH;
+      final int length = header >>> DECOMPRESSED_LENGTH;
       final byte[] result = new byte[length];
       int index = 0;
 

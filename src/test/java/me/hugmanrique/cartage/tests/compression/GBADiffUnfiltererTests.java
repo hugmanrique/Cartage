@@ -27,14 +27,14 @@ public class GBADiffUnfiltererTests {
   private static final GBADiffUnfilterer UNFILTERER = GBADiffUnfilterer.get();
 
   @Test
-  void testInvalidType() {
+  void testInvalidTypeThrows() {
     final var cartridge = fromData(new byte[4], ByteOrder.LITTLE_ENDIAN);
 
     assertThrows(DecompressionException.class, () -> UNFILTERER.decompress(cartridge));
   }
 
   @Test
-  void testInvalidDataSize() {
+  void testInvalidDataSizeThrows() {
     final var header = new byte[] { (byte) 0x80, 0, 0, 0 };
     final var cartridge = fromData(header, ByteOrder.BIG_ENDIAN);
 

@@ -76,6 +76,11 @@ public abstract class AbstractCartridge implements Cartridge {
     return this.offset < this.size();
   }
 
+  /*@Override
+  public boolean canRead(final int count) {
+    return this.offset + count <= this.size();
+  }*/
+
   @Override
   public void skip(final long count) {
     this.setOffset(this.offset + count);

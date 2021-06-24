@@ -7,8 +7,11 @@
 
 package me.hugmanrique.cartage.tests;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Objects;
 
 /**
  * Test utilities.
@@ -16,6 +19,15 @@ import java.nio.file.Path;
 public final class TestUtils {
 
   private static final Path ROMS_DIR = Path.of("roms");
+  private static final byte[] PRIMES;
+
+  static {
+    try {
+      PRIMES = getResourceBytes("primes.txt");
+    } catch (final IOException e) {
+      throw new RuntimeException(e);
+    }
+  }
 
   /**
    * Returns the path to a cartridge file.
@@ -30,6 +42,29 @@ public final class TestUtils {
       throw new IllegalArgumentException(path + " does not exist");
     }
     return path;
+  }
+
+  /**
+   * Finds and returns a resource with the given name.
+   *
+   * @param name the resource name
+   * @return the read bytes
+   * @throws IOException if an I/O error occurs
+   */
+  public static byte[] getResourceBytes(final String name) throws IOException {
+    try (final InputStream stream = TestUtils.class.getClassLoader().getResourceAsStream(name)) {
+      Objects.requireNonNull(stream, "Cannot find " + name);
+      return stream.readAllBytes();
+    }
+  }
+
+  /**
+   * Returns a copy of the contents of the {@code primes.txt} resource.
+   *
+   * @return a copy of the {@link #PRIMES} array
+   */
+  public static byte[] getPrimes() {
+    return PRIMES.clone();
   }
 
   private TestUtils() {
