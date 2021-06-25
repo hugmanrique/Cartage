@@ -8,8 +8,8 @@
 package me.hugmanrique.cartage.tests.compression;
 
 import static me.hugmanrique.cartage.tests.DummyCartridge.fromData;
-import static me.hugmanrique.cartage.tests.TestUtils.getPrimes;
-import static me.hugmanrique.cartage.tests.TestUtils.getResourceBytes;
+import static me.hugmanrique.cartage.tests.TestResources.getPrimes;
+import static me.hugmanrique.cartage.tests.TestResources.getResourceBytes;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -18,7 +18,6 @@ import java.io.IOException;
 import java.nio.ByteOrder;
 import me.hugmanrique.cartage.compression.DecompressionException;
 import me.hugmanrique.cartage.compression.GBALZXDecompressor;
-import me.hugmanrique.cartage.tests.TestUtils;
 import org.junit.jupiter.api.Test;
 
 /**

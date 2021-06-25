@@ -16,7 +16,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import me.hugmanrique.cartage.gba.GBACartridge;
 import me.hugmanrique.cartage.tests.CartridgeTestSuite;
-import me.hugmanrique.cartage.tests.TestUtils;
+import me.hugmanrique.cartage.tests.TestResources;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -24,7 +24,7 @@ import org.junit.jupiter.api.Test;
  */
 public class GBACartridgeTests extends CartridgeTestSuite<GBACartridge> {
 
-  private static final Path POKEMON_FIRERED = TestUtils.getCartridge("pfr.gba");
+  private static final Path POKEMON_FIRERED = TestResources.getCartridge("pfr.gba");
 
   private final GBACartridge.Header header;
 

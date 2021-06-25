@@ -71,7 +71,7 @@ public final class GBARLDecompressor implements Decompressor {
       }
       return result;
     } catch (final IndexOutOfBoundsException e) {
-      throw new DecompressionException("Got corrupted RLE-compressed data", e);
+      throw new DecompressionException("Got corrupted RL-compressed data", e);
     }
   }
 }

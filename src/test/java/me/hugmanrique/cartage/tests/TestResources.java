@@ -14,9 +14,9 @@ import java.nio.file.Path;
 import java.util.Objects;
 
 /**
- * Test utilities.
+ * Resources and data used for testing.
  */
-public final class TestUtils {
+public final class TestResources {
 
   private static final Path ROMS_DIR = Path.of("roms");
   private static final byte[] PRIMES;
@@ -52,7 +52,7 @@ public final class TestUtils {
    * @throws IOException if an I/O error occurs
    */
   public static byte[] getResourceBytes(final String name) throws IOException {
-    try (final InputStream stream = TestUtils.class.getClassLoader().getResourceAsStream(name)) {
+    try (final InputStream stream = TestResources.class.getClassLoader().getResourceAsStream(name)) {
       Objects.requireNonNull(stream, "Cannot find " + name);
       return stream.readAllBytes();
     }
@@ -67,7 +67,7 @@ public final class TestUtils {
     return PRIMES.clone();
   }
 
-  private TestUtils() {
+  private TestResources() {
     throw new AssertionError();
   }
 }

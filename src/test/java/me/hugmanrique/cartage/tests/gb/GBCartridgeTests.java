@@ -18,7 +18,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import me.hugmanrique.cartage.gb.GBCartridge;
 import me.hugmanrique.cartage.tests.CartridgeTestSuite;
-import me.hugmanrique.cartage.tests.TestUtils;
+import me.hugmanrique.cartage.tests.TestResources;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -26,7 +26,7 @@ import org.junit.jupiter.api.Test;
  */
 public class GBCartridgeTests extends CartridgeTestSuite<GBCartridge> {
 
-  private static final Path SUPER_MARIO = TestUtils.getCartridge("sml.gb");
+  private static final Path SUPER_MARIO = TestResources.getCartridge("sml.gb");
 
   private final GBCartridge.Header header;
 

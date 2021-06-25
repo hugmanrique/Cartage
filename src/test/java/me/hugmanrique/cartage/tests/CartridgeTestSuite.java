@@ -17,14 +17,12 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.TestInstance;
 
 /**
- * Tests the behavior of a {@link Cartridge} type.
+ * Tests the behavior of a {@link Cartridge} implementation.
  *
  * @param <T> the cartridge type
  */
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public abstract class CartridgeTestSuite<T extends Cartridge> {
-
-  // TODO Remove shared state between different test methods, it's ugly
 
   protected final T cartridge;
   private final MemorySegment original; // used to restore contents after each test

@@ -8,8 +8,8 @@
 package me.hugmanrique.cartage.tests.compression;
 
 import static me.hugmanrique.cartage.tests.DummyCartridge.fromData;
-import static me.hugmanrique.cartage.tests.TestUtils.getPrimes;
-import static me.hugmanrique.cartage.tests.TestUtils.getResourceBytes;
+import static me.hugmanrique.cartage.tests.TestResources.getPrimes;
+import static me.hugmanrique.cartage.tests.TestResources.getResourceBytes;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -44,12 +44,13 @@ public class GBAHuffmanDecompressorTests {
 
   @Test
   void testEmpty() {
-    final var header = new byte[] { 0x24, 0, 0, 0, 0, 0, 0 };
+    // tree length = 2 => start of paths = 6
+    final var header = new byte[] { 0x24, 0, 0, 0, 0, 0 };
     final var cartridge = fromData(header, ByteOrder.LITTLE_ENDIAN);
     final byte[] result = DECOMPRESSOR.decompress(cartridge);
 
     assertEquals(0, result.length);
-    assertEquals(7, cartridge.offset(), "offset is incremented");
+    assertEquals(6, cartridge.offset(), "offset is incremented");
   }
 
   @Test

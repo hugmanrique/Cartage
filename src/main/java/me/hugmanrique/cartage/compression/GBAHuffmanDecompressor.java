@@ -51,50 +51,46 @@ public final class GBAHuffmanDecompressor implements Decompressor {
       // the right node (1), starting at the most-significant bit. A path ends
       // when a leaf node is reached, which contains an uncompressed value of
       // bitDepth bits (usually 4 or 8).
-
       final int bitDepth = header & BIT_DEPTH;
       if (bitDepth == 0 || !NumberUtils.isPowerOf2(bitDepth)) {
         throw new DecompressionException(
             "Bit depth must be a positive power of 2, got " + bitDepth);
       }
-
       final int length = header >>> DECOMPRESSED_LENGTH;
       final byte[] result = new byte[length];
 
       final int treeLength = (cartridge.readUnsignedByte() + 1) << 1;
       final long rootNodeOffset = cartridge.offset();
-      final long pathsOffset = rootNodeOffset + treeLength - 1;
+      long nodeOffset = rootNodeOffset;
+      cartridge.skip(treeLength - 1); // start of paths
 
       int index = 0;
-      int currentCount = 0; // number of bits written to result[index] // TODO Update comment
+      byte bitCount = 0; // number of bits written to result[index]
       while (index < length) {
-        final int paths = cartridge.getInt(pathsOffset + index);
-
+        final int paths = cartridge.readInt();
         for (byte i = 31; i >= 0; i--) {
           final int direction = (paths >>> i) & 0x1; // left or right child
-          final byte node = cartridge.readByte();
+          final byte node = cartridge.getByte(nodeOffset);
 
           final int nextDelta = (((node & CHILD_OFFSET) + 1) << 1) | direction;
-          final long nextOffset = (cartridge.offset() & ALIGN_BASE_OFFSET) + nextDelta;
-          cartridge.setOffset(nextOffset);
+          nodeOffset = (nodeOffset & ALIGN_BASE_OFFSET) + nextDelta;
 
           // If the 7th (6th) bit is set, the left (right) child is a leaf
           final boolean nextIsLeaf = ((node << direction) & CHILD_IS_LEAF) != 0;
           if (nextIsLeaf) {
-            final byte value = cartridge.readByte();
-            // TODO It's possible that we will need to switch this to LE
+            final byte value = cartridge.getByte(nodeOffset);
             result[index] = (byte) ((result[index] << bitDepth) | value);
-            currentCount += bitDepth;
-            if ((currentCount & 0x7) == 0) { // TODO Replace by multiple of 8 check
+            bitCount += bitDepth;
+            if (bitCount == 8) {
+              bitCount = 0;
               if (++index == length) {
-                break;
+                break; // we're done, remaining paths are padding
               }
             }
-            cartridge.setOffset(rootNodeOffset);
+            nodeOffset = rootNodeOffset;
           }
         }
       }
-      //cartridge.setOffset(pathsOffset + length); // end of sequence of paths
       return result;
     } catch (final IndexOutOfBoundsException e) {
       throw new DecompressionException("Got corrupted Huffman-compressed data", e);
