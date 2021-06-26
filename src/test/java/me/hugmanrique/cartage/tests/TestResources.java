@@ -45,15 +45,26 @@ public final class TestResources {
   }
 
   /**
-   * Finds and returns a resource with the given name.
+   * Returns an input stream for reading the specified resource.
+   *
+   * @param name the resource name
+   * @return an input stream for reading the resource; must be closed by the caller
+   */
+  public static InputStream getResourceStream(final String name) {
+    InputStream stream = TestResources.class.getClassLoader().getResourceAsStream(name);
+    Objects.requireNonNull(stream, "Cannot find \"" + name + '"');
+    return stream;
+  }
+
+  /**
+   * Reads the contents of the specified resource.
    *
    * @param name the resource name
    * @return the read bytes
    * @throws IOException if an I/O error occurs
    */
   public static byte[] getResourceBytes(final String name) throws IOException {
-    try (final InputStream stream = TestResources.class.getClassLoader()
-        .getResourceAsStream(name)) {
+    try (final InputStream stream = getResourceStream(name)) {
       Objects.requireNonNull(stream, "Cannot find \"" + name + '"');
       return stream.readAllBytes();
     }

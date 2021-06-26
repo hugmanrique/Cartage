@@ -16,34 +16,32 @@ import me.hugmanrique.cartage.util.StringUtils;
  */
 record GBCartridgeHeaderImpl(GBCartridge cartridge) implements GBCartridge.Header {
 
-  private static final int ENTRY_POINT_ADDR = 0x100;
-  private static final int LOGO_ADDR = 0x104;
   static final byte[] VALID_LOGO = new byte[]
-    {
-      (byte) 0xCE, (byte) 0xED, 0x66, 0x66, (byte) 0xCC, 0x0D, 0x00, 0x0B, 0x03, 0x73, 0x00,
-      (byte) 0x83, 0x00, 0x0C, 0x00, 0x0D, 0x00, 0x08, 0x11, 0x1F, (byte) 0x88, (byte) 0x89,
-      0x00, 0x0E, (byte) 0xDC, (byte) 0xCC, 0x6E, (byte) 0xE6, (byte) 0xDD, (byte) 0xDD,
-      (byte) 0xD9, (byte) 0x99, (byte) 0xBB, (byte) 0xBB, 0x67, 0x63, 0x6E, 0x0E, (byte) 0xEC,
-      (byte) 0xCC, (byte) 0xDD, (byte) 0xDC, (byte) 0x99, (byte) 0x9F, (byte) 0xBB, (byte) 0xB9,
-      0x33, 0x3E
-    };
-
+      {
+          (byte) 0xCE, (byte) 0xED, 0x66, 0x66, (byte) 0xCC, 0x0D, 0x00, 0x0B, 0x03, 0x73, 0x00,
+          (byte) 0x83, 0x00, 0x0C, 0x00, 0x0D, 0x00, 0x08, 0x11, 0x1F, (byte) 0x88, (byte) 0x89,
+          0x00, 0x0E, (byte) 0xDC, (byte) 0xCC, 0x6E, (byte) 0xE6, (byte) 0xDD, (byte) 0xDD,
+          (byte) 0xD9, (byte) 0x99, (byte) 0xBB, (byte) 0xBB, 0x67, 0x63, 0x6E, 0x0E, (byte) 0xEC,
+          (byte) 0xCC, (byte) 0xDD, (byte) 0xDC, (byte) 0x99, (byte) 0x9F, (byte) 0xBB, (byte) 0xB9,
+          0x33, 0x3E
+      };
+  static final int GLOBAL_CHECKSUM_ADDR = 0x14E; // whole ROM
+  private static final int ENTRY_POINT_ADDR = 0x100;
+  private static final short JR_BASELINE = 2;
+  private static final int LOGO_ADDR = 0x104;
   private static final int TITLE_ADDR = 0x134;
   private static final int TITLE_LENGTH = 16;
   private static final int MANUFACTURER_ADDR = 0x13F;
   private static final int MANUFACTURER_LENGTH = 4;
-
   private static final int GBC_FLAG_ADDR = 0x143;
   private static final byte SUPPORTS_GBC = (byte) 0x80;
   private static final byte REQUIRES_GBC = (byte) 0xC0;
   private static final int SGB_FLAG_ADDR = 0x146;
   private static final byte SUPPORTS_SGB = 0x3;
-
   private static final int OLD_LICENSEE_ADDR = 0x14B;
   private static final byte USE_NEW_LICENSEE = 0x33;
   private static final int NEW_LICENSEE_ADDR = 0x144;
   private static final short NEW_LICENSEE_NONE = 0;
-
   private static final int TYPE_ADDR = 0x147;
   private static final int ROM_SIZE_ADDR = 0x148;
   private static final int BASE_ROM_SIZE = 1 << 15; // 32 KB
@@ -53,17 +51,12 @@ record GBCartridgeHeaderImpl(GBCartridge cartridge) implements GBCartridge.Heade
   private static final int CHECKSUM_ADDR = 0x14D; // header checksum
   private static final int CHECKSUM_START = 0x134;
   private static final int CHECKSUM_END = 0x14C;
-  static final int GLOBAL_CHECKSUM_ADDR = 0x14E; // whole ROM
 
   private static String prepareString(final String value, final int expectedLength) {
     requireNonNull(value);
     StringUtils.requireMaxLength(value, expectedLength);
     StringUtils.requireUppercaseAscii(value);
     return StringUtils.padEnd(value, expectedLength, '\0');
-  }
-
-  GBCartridgeHeaderImpl(final GBCartridge cartridge) {
-    this.cartridge = requireNonNull(cartridge);
   }
 
   /**
@@ -74,12 +67,32 @@ record GBCartridgeHeaderImpl(GBCartridge cartridge) implements GBCartridge.Heade
    * @return {@code true} if {@code opcode} represents a {@code JP} or {@code CALL} instruction
    * @see <a href="http://www.zilog.com/docs/z80/um0080.pdf">Table 15 in the Z80 User Manual</a>
    */
-  private static boolean isJumpOrCallOpcode(final int opcode) {
+  private static boolean isJumpImmediateOrCallOpcode(final int opcode) {
     return switch (opcode) {
-      // This is missing the parity and sign conditions. No cartridge uses these.
-      case 0xC3, 0xD8, 0xD2, 0xCA, 0xC2, 0xCD, 0xDC, 0xD4, 0xCC, 0xC4 -> true;
+      case 0xC3, 0xD8, 0xD2, 0xCA, 0xC2, 0xCD, 0xDC, 0xD4, 0xCC, 0xC4,
+          // No cartridge uses the parity and sign conditions in practice, added for completeness.
+          0xEA, 0xE2, 0xFA, 0xF2 -> true;
       default -> false;
     };
+  }
+
+  /**
+   * Returns whether the given Z80 operation code represents a {@code JR} instruction.
+   *
+   * @param opcode the Z80 opcode
+   * @return {@code true} if {@code opcode} represents a {@code JP} instruction; {@code false}
+   *     otherwise
+   * @see <a href="http://www.zilog.com/docs/z80/um0080.pdf">Table 15 in the Z80 User Manual</a>
+   */
+  private static boolean isJumpRelativeOpcode(final int opcode) {
+    return switch (opcode) {
+      case 0x18, 0x38, 0x30, 0x28, 0x20 -> true;
+      default -> false;
+    };
+  }
+
+  GBCartridgeHeaderImpl(final GBCartridge cartridge) {
+    this.cartridge = requireNonNull(cartridge);
   }
 
   @Override
@@ -89,13 +102,17 @@ record GBCartridgeHeaderImpl(GBCartridge cartridge) implements GBCartridge.Heade
     int offset = ENTRY_POINT_ADDR;
     do {
       int opcode = this.cartridge.getUnsignedByte(offset);
-      if (isJumpOrCallOpcode(opcode)) {
+      if (isJumpImmediateOrCallOpcode(opcode)) {
         // Read destination address
         return this.cartridge.getShort(offset + 1);
       }
+      if (isJumpRelativeOpcode(opcode)) {
+        // Read displacement
+        return (short) (this.cartridge.getByte(offset + 1) + JR_BASELINE);
+      }
     } while (offset++ <= ENTRY_POINT_ADDR + 1);
 
-    throw new IllegalStateException("Entry point contains no JP or CALL instruction");
+    throw new IllegalStateException("Entry point contains no JP, CALL or JR instruction");
   }
 
   @Override
