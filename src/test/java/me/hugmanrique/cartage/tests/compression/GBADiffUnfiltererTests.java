@@ -8,13 +8,15 @@
 package me.hugmanrique.cartage.tests.compression;
 
 import static me.hugmanrique.cartage.tests.DummyCartridge.fromData;
+import static me.hugmanrique.cartage.tests.TestResources.getPrimes;
+import static me.hugmanrique.cartage.tests.TestResources.getResourceBytes;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import java.nio.ByteBuffer;
+import java.io.IOException;
 import java.nio.ByteOrder;
-import jdk.incubator.foreign.MemorySegment;
+import java.util.Arrays;
 import me.hugmanrique.cartage.compression.DecompressionException;
 import me.hugmanrique.cartage.compression.GBADiffUnfilterer;
 import org.junit.jupiter.api.Test;
@@ -35,8 +37,8 @@ public class GBADiffUnfiltererTests {
 
   @Test
   void testInvalidDataSizeThrows() {
-    final var header = new byte[] { (byte) 0x80, 0, 0, 0 };
-    final var cartridge = fromData(header, ByteOrder.BIG_ENDIAN);
+    final var header = new byte[] { (byte) 0x80, 0, 0, 0 }; // data size = 0
+    final var cartridge = fromData(header, ByteOrder.LITTLE_ENDIAN);
 
     assertThrows(DecompressionException.class, () -> UNFILTERER.decompress(cartridge));
   }
@@ -44,7 +46,7 @@ public class GBADiffUnfiltererTests {
   @Test
   void testEmpty8Bit() {
     final var header = new byte[] { (byte) 0x81, 0, 0, 0 };
-    final var cartridge = fromData(header, ByteOrder.BIG_ENDIAN);
+    final var cartridge = fromData(header, ByteOrder.LITTLE_ENDIAN);
     final byte[] result = UNFILTERER.decompress(cartridge);
 
     assertEquals(0, result.length);
@@ -53,34 +55,29 @@ public class GBADiffUnfiltererTests {
   @Test
   void testEmpty16Bit() {
     final var header = new byte[] { (byte) 0x82, 0, 0, 0 };
-    final var cartridge = fromData(header, ByteOrder.BIG_ENDIAN);
+    final var cartridge = fromData(header, ByteOrder.LITTLE_ENDIAN);
     final byte[] result = UNFILTERER.decompress(cartridge);
 
     assertEquals(0, result.length);
   }
 
   @Test
-  void test8Bit() {
-    final var data = new byte[] { (byte) 0x81, 0, 0, 8, 22, 1, 1, 2, -2, -24, 10, -15 };
-    final var cartridge = fromData(data, ByteOrder.BIG_ENDIAN);
+  void testPrimes8BitDeltas() throws IOException {
+    final var cartridge =  fromData(
+        getResourceBytes("primes_diffunfilter8"), ByteOrder.LITTLE_ENDIAN);
     final byte[] result = UNFILTERER.decompress(cartridge);
 
-    assertArrayEquals(new byte[] { 22, 23, 24, 26, 24, 0, 10, -5 }, result);
+    assertArrayEquals(getPrimes(), result);
   }
 
   @Test
-  void test16Bit() {
-    final ByteBuffer srcBuffer = ByteBuffer.allocate(4 + 9 * 2).order(ByteOrder.BIG_ENDIAN);
-    srcBuffer.asShortBuffer()
-        .put(new short[] { (short) 0x8200, 9 * 2, 125, 1, 2, -3, -135, -5, 15, 2, -2 });
-    final var data = srcBuffer.array();
-    final var cartridge = fromData(MemorySegment.ofArray(data), ByteOrder.BIG_ENDIAN);
-    final byte[] result = UNFILTERER.decompress(cartridge);
+  void testPrimes16BitDeltas() throws IOException {
+    final var cartridge = fromData(
+        getResourceBytes("primes_diffunfilter16"), ByteOrder.LITTLE_ENDIAN);
+    // The cartridge has an odd size, and the unfilterer expects a 2 byte-aligned length.
+    // The compressed file was truncated, removing the trailing newline.
+    final byte[] result = Arrays.copyOfRange(UNFILTERER.decompress(cartridge), 0, 7177);
 
-    final ByteBuffer buffer = ByteBuffer.allocate(9 * 2);
-    final byte[] expected = buffer.array();
-    buffer.asShortBuffer().put(new short[] { 125, 126, 128, 125, -10, -15, 0, 2, 0 });
-
-    assertArrayEquals(expected, result);
+    assertArrayEquals(getPrimes(), result);
   }
 }

@@ -52,8 +52,9 @@ public final class TestResources {
    * @throws IOException if an I/O error occurs
    */
   public static byte[] getResourceBytes(final String name) throws IOException {
-    try (final InputStream stream = TestResources.class.getClassLoader().getResourceAsStream(name)) {
-      Objects.requireNonNull(stream, "Cannot find " + name);
+    try (final InputStream stream = TestResources.class.getClassLoader()
+        .getResourceAsStream(name)) {
+      Objects.requireNonNull(stream, "Cannot find \"" + name + '"');
       return stream.readAllBytes();
     }
   }

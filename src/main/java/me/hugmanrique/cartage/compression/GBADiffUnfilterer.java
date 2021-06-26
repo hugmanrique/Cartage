@@ -30,7 +30,7 @@ public final class GBADiffUnfilterer implements Decompressor {
     return INSTANCE;
   }
 
-  private static final byte TYPE = 8;
+  private static final byte TYPE = 0x8;
   private static final int DATA_SIZE = 0xF;
   private static final int DECOMPRESSED_LENGTH = 8;
   private static final int BYTE_DELTAS = 1;
@@ -90,8 +90,8 @@ public final class GBADiffUnfilterer implements Decompressor {
     for (int i = 0; i < length; ) {
       final short delta = source.readShort();
       absolute += delta;
-      dest[i++] = (byte) (absolute >>> 8);
       dest[i++] = (byte) absolute;
+      dest[i++] = (byte) (absolute >>> 8);
     }
   }
 }
