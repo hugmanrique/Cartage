@@ -51,7 +51,7 @@ public final class GBAHuffmanDecompressor implements Decompressor {
       // the right node (1), starting at the most-significant bit. A path ends
       // when a leaf node is reached, which contains an uncompressed value of
       // bitDepth bits (usually 4 or 8).
-      final int bitDepth = header & BIT_DEPTH;
+      final byte bitDepth = (byte) (header & BIT_DEPTH);
       if (bitDepth == 0 || !NumberUtils.isPowerOf2(bitDepth)) {
         throw new DecompressionException(
             "Bit depth must be a positive power of 2, got " + bitDepth);

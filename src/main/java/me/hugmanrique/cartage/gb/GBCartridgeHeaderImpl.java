@@ -67,6 +67,7 @@ record GBCartridgeHeaderImpl(GBCartridge cartridge) implements GBCartridge.Heade
    * @return {@code true} if {@code opcode} represents a {@code JP} or {@code CALL} instruction
    * @see <a href="http://www.zilog.com/docs/z80/um0080.pdf">Table 15 in the Z80 User Manual</a>
    */
+  @SuppressWarnings("checkstyle:Indentation")
   private static boolean isJumpImmediateOrCallOpcode(final int opcode) {
     return switch (opcode) {
       case 0xC3, 0xD8, 0xD2, 0xCA, 0xC2, 0xCD, 0xDC, 0xD4, 0xCC, 0xC4,
