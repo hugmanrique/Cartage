@@ -53,13 +53,10 @@ Credits:
 
 ## Testing
 
-Some tests expect the following game dumps to be available under the `roms/` directory:
+We use the following ROMs for testing purposes:
 
-| Game name | Platform | File name |
-|-----------|----------|-----------|
-| Pokémon FireRed (English) | Game Boy Advance | pfr.gba |
-
-Redistributing these files is illegal, so you need to dump these games by yourself.
+- [gbc-hw-tests](https://github.com/AntonioND/gbc-hw-tests) by AntonioND, and
+- [gba-tests](https://github.com/jsmolka/gba-tests) by jsmolka.
 
 ## License
 
