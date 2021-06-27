@@ -20,11 +20,15 @@ record GBACartridgeHeaderImpl(GBACartridge cartridge) implements GBACartridge.He
 
   private static final int ENTRY_INSTR_ADDR = GBACartridge.Header.ENTRY_INSTRUCTION_ADDR;
   private static final int ENTRY_POINT_ADDR = 0x0;
+  private static final int INSTR_LENGTH = 4; // bytes
   private static final int BRANCH_OPCODE = 0b11101010; // B{AL}
   private static final int MAX_BRANCH_OFFSET = (1 << 23) - 1; // words
 
   private static final int LOGO_ADDR = 0x4;
   private static final int LOGO_LENGTH = GBACartridge.Header.LOGO_LENGTH;
+  private static final int DEBUG_ENABLE_ADDR = 0x9C; // within logo
+  private static final byte ENABLE_DEBUG;
+  private static final byte DISABLE_DEBUG;
   static final byte[] VALID_LOGO;
 
   static {
@@ -46,6 +50,10 @@ record GBACartridgeHeaderImpl(GBACartridge cartridge) implements GBACartridge.He
     var intBuffer = buffer.asIntBuffer();
     intBuffer.put(validLogo);
     VALID_LOGO = buffer.array();
+
+    final int debugOffset = DEBUG_ENABLE_ADDR - LOGO_ADDR;
+    ENABLE_DEBUG = (byte) (VALID_LOGO[debugOffset] & 0x84); // set bit 2 and 7
+    DISABLE_DEBUG = VALID_LOGO[debugOffset];
   }
 
   private static final int TITLE_ADDR = 0xA0;
@@ -57,6 +65,8 @@ record GBACartridgeHeaderImpl(GBACartridge cartridge) implements GBACartridge.He
   private static final int SHORT_TITLE_LENGTH = 2;
   private static final int DEST_ADDR = CODE_ADDR + 3; // D
   private static final int LICENSEE_ADDR = 0xB0;
+  private static final int LICENSEE_LENGTH = 2;
+  private static final int REQ_CONSOLE_ADDR = 0xB3;
   private static final int DACS_ADDR = 0xB4;
   private static final int VERSION_ADDR = 0xBC;
   private static final int CHECKSUM_ADDR = 0xBD; // header checksum
@@ -90,12 +100,12 @@ record GBACartridgeHeaderImpl(GBACartridge cartridge) implements GBACartridge.He
    *     4.5 in the ARM7TDMI Instruction Set Reference</a>
    */
   private static boolean isBranchInstruction(final int instr) {
-    return ((instr >>> 24) & 0xF) == 0b1010;
+    return ((instr >>> 25) & 0x7) == 0b101;
   }
 
   @Override
   public int entryPoint() {
-    int instr = this.cartridge.getInt(ENTRY_POINT_ADDR);
+    final int instr = this.cartridge.getInt(ENTRY_POINT_ADDR);
     if (!isBranchInstruction(instr)) {
       throw new IllegalStateException("Entry point instruction is not a B instruction");
     }
@@ -103,8 +113,9 @@ record GBACartridgeHeaderImpl(GBACartridge cartridge) implements GBACartridge.He
     // Last 24 bytes of instruction contain the signed address offset.
     // Shift left to discard opcode and set sign bit, and then shift back,
     // converting from words to bytes (8 - 2 = 6).
-    int offset = ((instr << 8) >> 6); // bytes
-    return ENTRY_INSTR_ADDR + offset;
+    final int offset = ((instr << 8) >> 6); // bytes
+    // The program counter is two instructions ahead of the address when executing the branch.
+    return ENTRY_INSTR_ADDR + offset + (INSTR_LENGTH << 1);
   }
 
   @Override
@@ -112,11 +123,12 @@ record GBACartridgeHeaderImpl(GBACartridge cartridge) implements GBACartridge.He
     if ((address & 0x3) != 0) {
       throw new IllegalArgumentException("Got non-word-aligned address" + address);
     }
-    int offset = (address - ENTRY_INSTR_ADDR) >> 2; // words
+    // The PC value is two instructions ahead when executing the branch.
+    final int offset = (address - ENTRY_INSTR_ADDR - (INSTR_LENGTH << 1)) >> 2; // words
     if (Math.abs(offset) > MAX_BRANCH_OFFSET) {
       throw new IllegalArgumentException("Entry point address " + address + " is out of bounds");
     }
-    int instr = (BRANCH_OPCODE << 24) | (offset & 0xFFFFFF); // B{AL} offset
+    final int instr = (BRANCH_OPCODE << 24) | (offset & 0xFFFFFF); // B{AL} offset
     this.cartridge.setInt(ENTRY_POINT_ADDR, instr);
   }
 
@@ -203,25 +215,46 @@ record GBACartridgeHeaderImpl(GBACartridge cartridge) implements GBACartridge.He
   }
 
   @Override
-  public short licensee() {
-    return this.cartridge.getShort(LICENSEE_ADDR);
+  public String licensee() {
+    return this.cartridge.getAscii(LICENSEE_ADDR, LICENSEE_LENGTH);
   }
 
   @Override
-  public void setLicensee(final short licensee) {
-    this.cartridge.setShort(LICENSEE_ADDR, licensee);
+  public void setLicensee(final String value) {
+    this.cartridge.setAscii(LICENSEE_ADDR, prepareString(value, LICENSEE_LENGTH, false));
+  }
+
+  @Override
+  public byte requiredConsole() {
+    return this.cartridge.getByte(REQ_CONSOLE_ADDR);
+  }
+
+  @Override
+  public void setRequiredConsole(final byte value) {
+    this.cartridge.setByte(REQ_CONSOLE_ADDR, value);
   }
 
   @Override
   public GBACartridge.@Nullable DACSType dacs() {
-    byte value = this.cartridge.getByte(DACS_ADDR);
+    final boolean enabled = this.cartridge.getByte(DEBUG_ENABLE_ADDR) == ENABLE_DEBUG;
+    if (!enabled) {
+      return null;
+    }
+    final byte value = this.cartridge.getByte(DACS_ADDR);
     return GBACartridge.DACSType.of(value);
   }
 
   @Override
   public void setDacs(final GBACartridge.DACSType type) {
     requireNonNull(type);
+    this.cartridge.setByte(DEBUG_ENABLE_ADDR, ENABLE_DEBUG);
     this.cartridge.setByte(DACS_ADDR, type.value());
+  }
+
+  @Override
+  public void clearDacs() {
+    this.cartridge.setByte(DEBUG_ENABLE_ADDR, DISABLE_DEBUG);
+    this.cartridge.setByte(DACS_ADDR, (byte) 0);
   }
 
   @Override

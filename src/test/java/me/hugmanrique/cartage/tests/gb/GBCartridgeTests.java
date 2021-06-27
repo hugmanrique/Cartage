@@ -23,7 +23,8 @@ import org.junit.jupiter.api.Test;
 /**
  * Tests the default {@link GBCartridge} implementation.
  *
- * @see <a href="https://github.com/AntonioND/gbc-hw-tests">AntonioND's gbc-hw-tests</a> ROM suite
+ * @see <a href="https://github.com/AntonioND/gbc-hw-tests">AntonioND's gbc-hw-tests</a> test suite,
+ *     licensed under the MIT license
  */
 public class GBCartridgeTests extends CartridgeTestSuite<GBCartridge> {
 
@@ -40,14 +41,14 @@ public class GBCartridgeTests extends CartridgeTestSuite<GBCartridge> {
   }
 
   @Test
-  void testWriteEntrypoint() {
+  void testSetEntryPoint() {
     header.setEntryPoint((short) 0xABCD);
 
     assertEquals((short) 0xABCD, header.entryPoint());
   }
 
   @Test
-  void testInvalidEntrypointBytesThrows() {
+  void testInvalidEntryPointTextThrows() {
     final var text = new byte[4];
     cartridge.setBytes(0x100, text);
 

@@ -228,16 +228,16 @@ public interface GBCartridge extends Cartridge {
     void setValidLogo();
 
     /**
-     * Returns the 16-character uppercase game title.
+     * Returns the 16-character uppercase cartridge title.
      *
-     * @return the game title
+     * @return the cartridge title
      */
     String title();
 
     /**
-     * Sets the game title.
+     * Sets the cartridge title.
      *
-     * @param title the game title
+     * @param title the cartridge title
      * @throws IllegalArgumentException if the value has a length greater than 16, or contains
      *     non-ASCII or non-uppercase characters
      */
@@ -251,9 +251,9 @@ public interface GBCartridge extends Cartridge {
     String manufacturer();
 
     /**
-     * Sets the game manufacturer.
+     * Sets the cartridge manufacturer.
      *
-     * @param manufacturer the game manufacturer
+     * @param manufacturer the cartridge manufacturer
      * @throws IllegalArgumentException if the value has a length greater than 4, or contains
      *     non-ASCII or non-uppercase characters
      */
@@ -274,22 +274,22 @@ public interface GBCartridge extends Cartridge {
     void setGbc(final byte value);
 
     /**
-     * Returns whether the game supports GBC functions.
+     * Returns whether the cartridge supports GBC functions.
      *
-     * @return {@code true} if the game supports GBC functions
-     * @see #requiresColor() to check if the game requires a GBC to run
+     * @return {@code true} if the cartridge supports GBC functions
+     * @see #requiresColor() to check if the cartridge requires a GBC to run
      */
     boolean hasColorFunctions();
 
     /**
-     * Returns whether the game requires a GBC console to run.
+     * Returns whether the cartridge requires a GBC console to run.
      *
-     * @return {@code true} if the game requires a GBC to run
+     * @return {@code true} if the cartridge requires a GBC to run
      */
     boolean requiresColor();
 
     /**
-     * Returns the licensee code, which indicates the company or publisher of the game.
+     * Returns the licensee code, which indicates the company or publisher of the cartridge.
      *
      * @return the licensee code
      */
@@ -324,9 +324,9 @@ public interface GBCartridge extends Cartridge {
     void setSgb(final byte value);
 
     /**
-     * Returns whether the game supports SGB functions.
+     * Returns whether the cartridge supports SGB functions.
      *
-     * @return {@code true} if the game supports SGB functions
+     * @return {@code true} if the cartridge supports SGB functions
      */
     boolean hasSuperFunctions();
 
@@ -445,14 +445,14 @@ public interface GBCartridge extends Cartridge {
     void setDestination(final boolean destination);
 
     /**
-     * Returns the game version.
+     * Returns the cartridge version.
      *
      * @return the version
      */
     byte version();
 
     /**
-     * Sets the game version.
+     * Sets the cartridge version.
      *
      * @param version the version
      */

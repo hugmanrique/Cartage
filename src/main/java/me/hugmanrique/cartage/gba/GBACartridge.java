@@ -14,7 +14,6 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import me.hugmanrique.cartage.Cartridge;
-import me.hugmanrique.cartage.compression.Decompressor;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
@@ -238,8 +237,9 @@ public interface GBACartridge extends Cartridge {
      * #ENTRY_INSTRUCTION_ADDR} with a relative word offset to the given address.
      *
      * <p>The ARM7TDMI branch instruction contain a signed 24-bit word offset. Therefore,
-     * the minimum and maximum entry point addresses are {@code 0x6000004} and {@code 0x9FFFFFC}
-     * respectively.
+     * the minimum and maximum entry point addresses are {@code 0x6000010} and {@code 0xA000004}
+     * respectively (considering the program counter points to the instruction being fetched, i.e.
+     * is two instruction ahead of the address when executing the branch).
      *
      * @param address the entry point address, in bytes
      * @throws IllegalArgumentException if the given address is out of bounds, or is not word
@@ -301,16 +301,16 @@ public interface GBACartridge extends Cartridge {
     void setValidLogo();
 
     /**
-     * Returns the 12-character uppercase game title.
+     * Returns the 12-character uppercase cartridge title.
      *
-     * @return the game title
+     * @return the cartridge title
      */
     String title();
 
     /**
-     * Sets the game title.
+     * Sets the cartridge title.
      *
-     * @param title the game title
+     * @param title the cartridge title
      * @throws IllegalArgumentException if the value has a length greater than 12, or contains
      *     non-ASCII or non-uppercase characters
      */
@@ -352,17 +352,17 @@ public interface GBACartridge extends Cartridge {
     void setType(final Type type);
 
     /**
-     * Returns the 2-character uppercase short game title, derived from the UTTD code.
+     * Returns the 2-character uppercase short cartridge title, derived from the UTTD code.
      *
-     * @return the short game title
+     * @return the short cartridge title
      */
     String shortTitle();
 
     /**
-     * Sets the short game title.
+     * Sets the short cartridge title.
      *
-     * @param value the short game title
-     * @throws IllegalArgumentException if the value as a length different from 2, or contains
+     * @param value the short cartridge title
+     * @throws IllegalArgumentException if the value has a length different from 2, or contains
      *     non-ASCII or non-uppercase characters
      */
     void setShortTitle(final String value);
@@ -382,44 +382,67 @@ public interface GBACartridge extends Cartridge {
     void setDestination(final Destination destination);
 
     /**
-     * Returns the licensee code, which indicates the company or publisher of the game.
+     * Returns the 2-character uppercase licensee code, which indicates the company or publisher
+     * of the cartridge; also known as the maker code.
      *
      * @return the licensee code
      */
-    short licensee();
+    String licensee();
 
     /**
      * Sets the licensee code.
      *
-     * @param licensee the licensee code
+     * @param value the licensee code
+     * @throws IllegalArgumentException if the value has a length different from 2, or contains
+     *     non-ASCII or non-uppercase characters
      */
-    void setLicensee(final short licensee);
+    void setLicensee(final String value);
 
     // Skip main unit code, always 0
 
     /**
+     * Returns the required console model to use the cartridge; also known as the main unit code.
+     *
+     * @return the required console model
+     */
+    byte requiredConsole();
+
+    /**
+     * Sets the required console model.
+     *
+     * @param value the required console model
+     */
+    void setRequiredConsole(final byte value);
+
+    /**
      * Returns the type of the DACS memory, if any.
      *
-     * @return the DACS memory type, or {@code null} if unknown
+     * @return the DACS memory type, or {@code null} if the debugging handler is disabled or the
+     *     value is unknown
      */
     @Nullable DACSType dacs();
 
     /**
-     * Sets the DACS memory type.
+     * Enables the debugging handler and sets the given DACS memory type.
      *
      * @param type the DACS memory type
      */
     void setDacs(final DACSType type);
 
     /**
-     * Returns the game version.
+     * Disables the debugging handler.
+     */
+    void clearDacs();
+
+    /**
+     * Returns the cartridge version.
      *
      * @return the version
      */
     byte version();
 
     /**
-     * Sets the game version.
+     * Sets the cartridge version.
      *
      * @param version the version
      */

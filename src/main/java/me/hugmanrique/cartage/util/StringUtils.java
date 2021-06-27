@@ -72,7 +72,7 @@ public final class StringUtils {
       if (acceptNullTerminators && c == '\0') {
         continue;
       }
-      if (c != ' ' && (c < 'A' || c > 'Z')) {
+      if (c != ' ' && (c < '0' || c > '9') && (c < 'A' || c > 'Z')) {
         throw new IllegalArgumentException("Expected all-uppercase ASCII string, got " + string);
       }
     }
