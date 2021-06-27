@@ -1,3 +1,10 @@
+/*
+ * Copyright (c) 2021 Hugo Manrique.
+ *
+ * This work is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
 package me.hugmanrique.cartage.tests.gba;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
@@ -15,8 +22,8 @@ import org.junit.jupiter.api.Test;
 /**
  * Tests the default {@link GBACartridge} implementation.
  *
- * @see <a href="https://github.com/jsmolka/gba-tests">jsmolka's test suite</a>, licensed under the
- *     MIT license
+ * @see <a href="https://github.com/jsmolka/gba-tests">jsmolka's gba-tests</a> test suite, licensed
+ *     under the MIT license
  */
 public class GBACartridgeTests extends CartridgeTestSuite<GBACartridge> {
 
