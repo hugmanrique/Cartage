@@ -57,7 +57,6 @@ Some tests expect the following game dumps to be available under the `roms/` dir
 
 | Game name | Platform | File name |
 |-----------|----------|-----------|
-| Super Mario Land | Game Boy | sml.gb |
 | Pokémon FireRed (English) | Game Boy Advance | pfr.gba |
 
 Redistributing these files is illegal, so you need to dump these games by yourself.

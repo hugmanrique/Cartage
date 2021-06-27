@@ -1,10 +1,3 @@
-/*
- * Copyright (c) 2021 Hugo Manrique.
- *
- * This work is licensed under the MIT license found in the
- * LICENSE file in the root directory of this source tree.
- */
-
 package me.hugmanrique.cartage.tests.gb;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
@@ -15,7 +8,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
-import java.nio.file.Path;
 import me.hugmanrique.cartage.gb.GBCartridge;
 import me.hugmanrique.cartage.tests.CartridgeTestSuite;
 import me.hugmanrique.cartage.tests.TestResources;
@@ -23,209 +15,326 @@ import org.junit.jupiter.api.Test;
 
 /**
  * Tests the default {@link GBCartridge} implementation.
+ *
+ * @see <a href="https://github.com/AntonioND/gbc-hw-tests">AntonioND's gbc-hw-tests</a> ROM suite
  */
 public class GBCartridgeTests extends CartridgeTestSuite<GBCartridge> {
-
-  private static final Path SUPER_MARIO = TestResources.getCartridge("sml.gb");
 
   private final GBCartridge.Header header;
 
   GBCartridgeTests() throws IOException {
-    super(GBCartridge.read(SUPER_MARIO));
+    super(GBCartridge.read(TestResources.getResourceStream("roms/AntonioND.gbc")));
     this.header = this.cartridge.header();
   }
 
   @Test
-  void testEntryPoint() {
-    assertEquals(0x150, header.entryPoint());
-    header.setEntryPoint((short) 0xABCD);
-    assertEquals((short) 0xABCD, header.entryPoint());
+  void testReadEntrypoint() {
+    assertEquals(0x4E, header.entryPoint()); // JR 0x4C
+  }
 
-    // Manually overwrite entry point area with NOPs
-    byte[] text = new byte[4];
+  @Test
+  void testWriteEntrypoint() {
+    header.setEntryPoint((short) 0xABCD);
+
+    assertEquals((short) 0xABCD, header.entryPoint());
+  }
+
+  @Test
+  void testInvalidEntrypointBytesThrows() {
+    final var text = new byte[4];
     cartridge.setBytes(0x100, text);
+
     assertThrows(IllegalStateException.class, header::entryPoint);
   }
 
   @Test
-  void testLogo() {
-    byte[] valid = GBCartridge.Header.getValidLogo();
-    byte[] logo = header.logo();
-    assertArrayEquals(valid, logo);
+  void testReadLogo() {
+    final var expected = GBCartridge.Header.getValidLogo();
+    final byte[] actual = header.logo();
+    final var dest = new byte[GBCartridge.Header.LOGO_LENGTH];
+    header.logo(dest);
 
-    logo = new byte[GBCartridge.Header.LOGO_LENGTH];
-    header.logo(logo);
-    assertArrayEquals(valid, logo);
+    assertArrayEquals(expected, actual);
+    assertArrayEquals(expected, dest);
+  }
 
+  @Test
+  void testReadLogoToTooSmallArrayThrows() {
     assertThrows(IllegalArgumentException.class, () -> {
       header.logo(new byte[1]);
-    }, "Invalid length");
+    });
   }
 
   @Test
   void testSetLogo() {
-    byte[] logo = new byte[GBCartridge.Header.LOGO_LENGTH]; // zeros
+    final var logo = new byte[GBCartridge.Header.LOGO_LENGTH];
     header.setLogo(logo);
+
     assertArrayEquals(logo, header.logo());
-
-    byte[] valid = GBCartridge.Header.getValidLogo();
-    header.setValidLogo();
-    assertArrayEquals(valid, header.logo());
-
-    assertThrows(IllegalArgumentException.class, () -> {
-      header.setLogo(new byte[64]);
-    }, "Invalid length");
   }
 
   @Test
-  void testLogoMethodReturnsCopies() {
+  void testSetValidLogo() {
+    final var logo = GBCartridge.Header.getValidLogo();
+    header.setValidLogo();
+
+    assertArrayEquals(logo, header.logo());
+  }
+
+  @Test
+  void testSetLogoFromTooSmallArrayThrows() {
+    assertThrows(IllegalArgumentException.class, () -> {
+      header.setLogo(new byte[64]);
+    });
+  }
+
+  @Test
+  void testLogoMethodsReturnArrayCopies() {
     assertNotSame(header.logo(), header.logo());
     assertNotSame(GBCartridge.Header.getValidLogo(), GBCartridge.Header.getValidLogo());
   }
 
   @Test
-  void testTitle() {
-    assertEquals("SUPER MARIOLAND\0", header.title());
+  void testReadTitle() {
+    assertEquals("CPU REG START\0\0\0", header.title());
   }
 
   @Test
   void testSetTitle() {
-    final String newTitle = "HELLO WORLD\0\0\0\0\0";
-    header.setTitle(newTitle);
-    assertEquals(newTitle, header.title());
+    final String title = "HELLO WORLD\0\0\0\0\0";
+    header.setTitle(title);
 
-    assertThrows(IllegalArgumentException.class, () ->
-        header.setTitle("ABCDEFGHIJKLMNOPQ"), "16 chars");
-    assertThrows(IllegalArgumentException.class, () ->
-        header.setTitle("áááááááááááááááá"), "ASCII");
-    assertThrows(IllegalArgumentException.class, () ->
-        header.setTitle("super marioland\0"), "uppercase");
+    assertEquals(title, header.title());
+  }
+
+  @Test
+  void testSetTooLongTitleThrows() {
+    assertThrows(IllegalArgumentException.class, () -> {
+      header.setTitle("ABCDEFGHIJKLMNOPQ");
+    });
+  }
+
+  @Test
+  void testSetNonAsciiTitleThrows() {
+    assertThrows(IllegalArgumentException.class, () -> {
+      header.setTitle("áááááááááááááááá");
+    });
+  }
+
+  @Test
+  void testSetNonUppercaseTitleThrows() {
+    assertThrows(IllegalArgumentException.class, () -> {
+      header.setTitle("super marioland\0");
+    });
   }
 
   @Test
   void testSetTitlePadsValue() {
-    header.setTitle("FOO BAR BAZ"); // length 11 <= 16
+    header.setTitle("FOO BAR BAZ"); // length 11 < 16
+
     assertEquals("FOO BAR BAZ\0\0\0\0\0", header.title());
   }
 
   @Test
-  void testManufacturer() {
-    // This cartridge is old, overlaps with title
-    assertEquals("LAND", header.manufacturer());
-    final String newManufacturer = "ABCD";
-    header.setManufacturer(newManufacturer);
-    assertEquals(newManufacturer, header.manufacturer());
-    assertThrows(IllegalArgumentException.class, () ->
-        header.setManufacturer("ABCDE"), "4 chars");
-    assertThrows(IllegalArgumentException.class, () ->
-        header.setManufacturer("éíóú"), "ASCII");
-    assertThrows(IllegalArgumentException.class, () ->
-        header.setManufacturer("abcd\0"), "uppercase");
+  void testReadManufacturer() {
+    assertEquals("RT\0\0", header.manufacturer());
+  }
+
+  @Test
+  void testSetManufacturer() {
+    final String manufacturer = "ABCD";
+    header.setManufacturer(manufacturer);
+
+    assertEquals(manufacturer, header.manufacturer());
+  }
+
+  @Test
+  void testSetTooLongManufacturerThrows() {
+    assertThrows(IllegalArgumentException.class, () -> {
+      header.setManufacturer("ABCDE");
+    });
+  }
+
+  @Test
+  void testSetNonAsciiManufacturerThrows() {
+    assertThrows(IllegalArgumentException.class, () -> {
+      header.setManufacturer("éíóú");
+    });
+  }
+
+  @Test
+  void testSetNonUppercaseManufacturerThrows() {
+    assertThrows(IllegalArgumentException.class, () -> {
+      header.setManufacturer("abcd");
+    });
   }
 
   @Test
   void testSetManufacturerPadsValue() {
-    header.setManufacturer("AB"); // length 2 <= 4
+    header.setManufacturer("AB"); // length 2 < 4
+
     assertEquals("AB\0\0", header.manufacturer());
   }
 
   @Test
-  void testGbc() {
+  void testReadGbc() {
     assertEquals(0, header.gbc());
     assertFalse(header.hasColorFunctions());
     assertFalse(header.requiresColor());
+  }
+
+  @Test
+  void testSetHasColorGbc() {
     header.setGbc((byte) 0x80);
+
     assertEquals((byte) 0x80, header.gbc());
     assertTrue(header.hasColorFunctions());
     assertFalse(header.requiresColor());
+  }
+
+  @Test
+  void testSetRequiresColorGbc() {
     header.setGbc((byte) 0xC0);
+
+    assertEquals((byte) 0xC0, header.gbc());
     assertTrue(header.hasColorFunctions());
     assertTrue(header.requiresColor());
   }
 
   @Test
-  void testLicensee() {
-    // SML uses old licensee (Nintendo R&D1)
-    assertEquals(1, header.licensee());
-
-    header.setOldLicensee((byte) 8);
-    assertEquals(8, header.licensee());
-
-    header.setNewLicensee((short) 41);
-    assertEquals(41, header.licensee());
+  void testReadLicensee() {
+    assertEquals(0, header.licensee()); // None (uses old)
   }
 
   @Test
-  void testSgb() {
+  void testSetOldLicensee() {
+    header.setOldLicensee((byte) 0x8); // Capcom
+
+    assertEquals(0x8, header.licensee());
+  }
+
+  @Test
+  void testSetNewLicensee() {
+    header.setNewLicensee((byte) 0x29); // Ubisoft
+
+    assertEquals(0x29, header.licensee());
+  }
+
+  @Test
+  void testReadSgb() {
     assertEquals(0, header.sgb());
     assertFalse(header.hasSuperFunctions());
+  }
+
+  @Test
+  void testSetSgb() {
     header.setSgb((byte) 0x3);
+
     assertEquals(0x3, header.sgb());
     assertTrue(header.hasSuperFunctions());
   }
 
   @Test
-  void testType() {
-    assertEquals(GBCartridge.Type.MBC1, header.type());
+  void testReadType() {
+    assertEquals(GBCartridge.Type.MBC5_RAM_BATTERY, header.type());
+  }
+
+  @Test
+  void testSetType() {
     header.setType(GBCartridge.Type.ROM_ONLY);
+
     assertEquals(GBCartridge.Type.ROM_ONLY, header.type());
   }
 
   @Test
-  void testRomSize() {
-    assertEquals(0x1, header.romSize());
-    assertEquals(1 << 16, header.romSizeBytes()); // 64 KB
-    // Linear BASE_SIZE << n
+  void testReadRomSize() {
+    assertEquals(0, header.romSize());
+    assertEquals(1 << 15, header.romSizeBytes()); // 32 KB
+  }
+
+  @Test
+  void testSetRomSize() {
     header.setRomSize((byte) 0x5);
+
     assertEquals(0x5, header.romSize());
     assertEquals(1 << 20, header.romSizeBytes()); // 1 MB
-    // Non power-of-2
+  }
+
+  @Test
+  void testSetNonPowerOf2RomSize() {
     header.setRomSize((byte) 0x53);
+
     assertEquals(0x53, header.romSize());
     assertEquals(0x140000, header.romSizeBytes()); // 1.2 MB (80 banks)
   }
 
   @Test
-  void testRamSize() {
-    assertEquals(0, header.ramSize());
-    assertEquals(0, header.ramSizeBytes());
-    header.setRamSize((byte) 0x3);
-    assertEquals((byte) 0x3, header.ramSize());
+  void testReadRamSize() {
+    assertEquals(0x3, header.ramSize());
     assertEquals(1 << 15, header.ramSizeBytes()); // 32 KB
-    header.setRamSize((byte) 0x5);
-    assertEquals(1 << 16, header.ramSizeBytes()); // 64 KB
   }
 
   @Test
-  void testDestination() {
-    assertFalse(header.destination());
-    assertTrue(header.japaneseDistribution());
-    header.setDestination(true);
+  void testSetRamSize() {
+    header.setRamSize((byte) 0x2);
+
+    assertEquals(0x2, header.ramSize());
+    assertEquals(1 << 13, header.ramSizeBytes()); // 8 KB
+  }
+
+  @Test
+  void testReadDestination() {
     assertTrue(header.destination());
     assertFalse(header.japaneseDistribution());
   }
 
   @Test
-  void testHeaderChecksum() {
-    assertEquals((byte) 0x9E, header.checksum());
+  void testSetDestination() {
+    header.setDestination(false);
+
+    assertFalse(header.destination());
+    assertTrue(header.japaneseDistribution());
+  }
+
+  @Test
+  void testReadHeaderChecksum() {
+    assertEquals(0x34, header.checksum());
+  }
+
+  @Test
+  void testSetHeaderChecksum() {
     header.setChecksum((byte) 0x12);
-    assertEquals((byte) 0x12, header.checksum());
+
+    assertEquals(0x12, header.checksum());
   }
 
   @Test
   void testComputeChecksum() {
-    assertEquals((byte) 0x9E, header.computeChecksum());
-
-    // Simulate a bit flip
-    header.setDestination(true);
-    assertEquals((byte) 0x9D, header.computeChecksum());
-    header.setChecksum();
-    assertEquals((byte) 0x9D, header.checksum());
+    assertEquals(0x34, header.computeChecksum());
   }
 
   @Test
-  void testGlobalChecksum() {
-    assertEquals((short) 0x416B, header.globalChecksum());
-    assertEquals((short) 0x416B, cartridge.computeChecksum());
+  void testComputeChecksumAfterBitFlip() {
+    header.setDestination(false);
+
+    assertEquals(0x35, header.computeChecksum());
+  }
+
+  @Test
+  void testComputeAndSetChecksum() {
+    header.setDestination(false); // simulate bit flip
+    header.setChecksum();
+
+    assertEquals(0x35, header.checksum());
+  }
+
+  @Test
+  void testReadGlobalChecksum() {
+    assertEquals(0x47D, header.globalChecksum());
+  }
+
+  @Test
+  void testComputeGlobalChecksum() {
+    assertEquals(0x47D, cartridge.computeChecksum());
   }
 }
