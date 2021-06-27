@@ -18,12 +18,13 @@ public final class BufferUtils {
    * operation observes the results of past copy operations (unlike {@link System#arraycopy(Object,
    * int, Object, int, int)}).
    *
+   * <p>Fallbacks to {@link System#arraycopy(Object, int, Object, int, int)}</p>
+   * if the source and destination ranges do not overlap.
+   *
    * @param arr the source and destination array
    * @param srcPos the starting source position in the array
    * @param destPos the starting destination position in the array
    * @param length the number of array elements to copy
-   * @implNote fallbacks to {@link System#arraycopy(Object, int, Object, int, int)} if the
-   *     source and destination ranges do not overlap.
    */
   public static void copyByteByByte(final byte[] arr, final int srcPos, final int destPos,
                                     final int length) {

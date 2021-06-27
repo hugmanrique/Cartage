@@ -103,7 +103,6 @@ public interface GBCartridge extends Cartridge {
     MBC7_RAM_BATTERY_ACCELEROMETER(0x22),
     // 0x23-FB unused
     POCKET_CAMERA(0xFC),
-    @SuppressWarnings("SpellCheckingInspection")
     BANDAI_TAMA5(0xFD),
     HUC3(0xFE),
     HUC1_RAM_BATTERY(0xFF);

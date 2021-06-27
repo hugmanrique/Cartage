@@ -44,5 +44,13 @@ public interface Decompressor {
     }
   }
 
+  /**
+   * Decompresses data starting at the current offset of the given cartridge. The offset of the
+   * cartridge is incremented by the number of bytes read.
+   *
+   * @param cartridge the cartridge
+   * @return the decompressed data
+   * @throws DecompressionException if an error occurs while attempting decompression
+   */
   byte[] decompress(final Cartridge cartridge) throws DecompressionException;
 }

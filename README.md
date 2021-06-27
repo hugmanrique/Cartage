@@ -19,7 +19,7 @@ repositories {
 }
 
 dependencies {
-  compile 'me.hugmanrique:cartage:0.0.1-SNAPSHOT'
+  compile 'me.hugmanrique:cartage:0.0.3-SNAPSHOT'
 }
 ```
 
@@ -29,7 +29,7 @@ dependencies {
 <dependency>
   <groupId>me.hugmanrique</groupId>
   <artifactId>cartage</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
+  <version>0.0.3-SNAPSHOT</version>
 </dependency>
 ```
 

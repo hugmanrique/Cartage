@@ -1,23 +1,29 @@
+import java.nio.charset.StandardCharsets
+
 plugins {
   id 'java-library'
   id 'checkstyle'
   id 'net.ltgt.errorprone' version '2.0.1'
   id 'org.cadixdev.licenser' version '0.6.1'
+  id 'signing'
   id 'maven-publish'
   id 'io.github.gradle-nexus.publish-plugin' version '1.1.0'
 }
 
 group 'me.hugmanrique'
-version '0.0.2-SNAPSHOT'
+version '0.0.3-SNAPSHOT'
 
 ext {
   junitVersion = '5.7.2'
+  isReleaseVersion = !version.endsWith('SNAPSHOT')
 }
 
 java {
   toolchain {
     languageVersion = JavaLanguageVersion.of(16)
   }
+  withJavadocJar()
+  withSourcesJar()
 }
 
 compileJava {
@@ -40,6 +46,15 @@ dependencies {
   testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:${junitVersion}"
 }
 
+javadoc {
+  options {
+    encoding = StandardCharsets.UTF_8.name()
+    charSet = StandardCharsets.UTF_8.name()
+    source = JavaVersion.VERSION_16.toString()
+    addStringOption('Xdoclint:all,-missing/package')
+  }
+}
+
 checkstyle {
   // Fail build if there's any violations
   maxErrors = 0
@@ -50,9 +65,33 @@ test {
   useJUnitPlatform()
 }
 
+// Run `./gradlew publishToSonatype closeSonatypeStagingRepository` to publish
 publishing {
   publications {
     mavenJava(MavenPublication) {
+      pom {
+        name = 'Cartage'
+        description = 'Utilities for reading and writing retro console cartridges'
+        url = 'https://github.com/hugmanrique/Cartage'
+        licenses {
+          license {
+            name = 'MIT License'
+            url = 'https://opensource.org/licenses/mit-license.php'
+          }
+        }
+        scm {
+          connection = 'scm:git:git@github.com:hugmanrique/Cartage.git'
+          developerConnection = 'scm:git:git@github.com:hugmanrique/Cartage.git'
+          url = 'https://github.com/hugmanrique/Cartage'
+        }
+        developers {
+          developer {
+            id = 'hugmanrique'
+            name = 'Hugo Manrique'
+            email = 'maven@hugmanrique.me'
+          }
+        }
+      }
       from(components.java)
     }
   }
@@ -62,4 +101,9 @@ nexusPublishing {
   repositories {
     sonatype()
   }
+}
+
+signing {
+  required { isReleaseVersion && gradle.taskGraph.hasTask('publish') }
+  sign publishing.publications.mavenJava
 }
